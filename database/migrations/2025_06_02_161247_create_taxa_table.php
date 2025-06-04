@@ -15,7 +15,6 @@ return new class extends Migration
             $table->id();
             $table->string('scientific_name');
             $table->string('common_name');
-            //$table->biginteger('parent_id');
             $table->timestamps();
         });
     }

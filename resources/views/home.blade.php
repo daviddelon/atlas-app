@@ -9,6 +9,9 @@
         @foreach ($taxa as $taxon)
         <div class="card" style="width: 18rem;">
             <div style="height: 18rem;" id="map{{ $loop->index }}"></div>
+            @if ($taxon->default_photo_url())
+                <img src={{ $taxon->default_photo_url() }}></img>
+            @endif
             <div class="card-body">
                 <h5 class="card-title">{{ $taxon->common_name }}</h5>
                 <p class="card-text">Texte</p>
@@ -24,7 +27,7 @@
 
     @php
     $observations=$taxon->observations->map(function ($observation) {
-    return  array ( 'latlng' => array($observation->latitude,$observation->longitude ));
+        return  array ( 'latlng' => array($observation->latitude,$observation->longitude ));
     });
 
     @endphp
