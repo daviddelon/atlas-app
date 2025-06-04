@@ -2,10 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Observation;
+use App\Models\Taxon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
-class ObservationController extends Controller
+;
+
+class TaxonController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -13,7 +16,21 @@ class ObservationController extends Controller
     public function index()
     {
 
+
+
+        $taxa=Taxon::with(['observations'])
+        ->withCount('observations')
+        ->orderBy('observations_count', 'desc')
+        ->orderBy('id', 'asc')  // pour éviter affichage en doublon sur la pagination !
+        ->simplePaginate(8);
+
+
+
+        return view('home', [
+            'taxa'=>$taxa
+        ]);
     }
+
 
     /**
      * Show the form for creating a new resource.
@@ -34,7 +51,7 @@ class ObservationController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Observation $observation)
+    public function show(Taxon $taxon)
     {
         //
     }
@@ -42,7 +59,7 @@ class ObservationController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Observation $observation)
+    public function edit(Taxon $taxon)
     {
         //
     }
@@ -50,7 +67,7 @@ class ObservationController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Observation $observation)
+    public function update(Request $request, Taxon $taxon)
     {
         //
     }
@@ -58,7 +75,7 @@ class ObservationController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Observation $observation)
+    public function destroy(Taxon $taxon)
     {
         //
     }

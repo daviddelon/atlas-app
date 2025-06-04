@@ -10,6 +10,11 @@ class Observation extends Model
 
     use HasFactory;
 
-    protected $fillable = ['observation_id','taxon_id','observed_on','observed_by', 'license', 'longitude', 'latitude'];
+    protected $fillable = ['taxon_id','observed_on','observed_by', 'license', 'longitude', 'latitude'];
+
+    public function taxon () {
+        return $this->belongsTo(Taxon::class);
+    }
+
 
 }

@@ -1,10 +1,10 @@
 // Display a map with markers and return a map
 
-export function map_index(markers,mapid) {
+export function map_index(observations,mapid) {
 
-    var map = L.map(mapid, {
+    var map = L.map("map"+mapid, {
         center: [43.78, 3.76],
-        zoom: 13,
+        zoom: 11,
         scrollWheelZoom: false
     });
 
@@ -14,6 +14,13 @@ export function map_index(markers,mapid) {
         attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
     }).addTo(map);
 
+
+
+    observations.map(function (item) {
+
+        L.circleMarker(item.latlng, {radius:2}).addTo(map);
+
+    });
 
     return map;
 

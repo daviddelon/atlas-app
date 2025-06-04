@@ -5,46 +5,40 @@
 @section('content')
 <div class="container">
     <div class="row">
+
+        @foreach ($taxa as $taxon)
         <div class="card" style="width: 18rem;">
-            <div style="height: 18rem;" id="map0"></div>
+            <div style="height: 18rem;" id="map{{ $loop->index }}"></div>
             <div class="card-body">
-                <h5 class="card-title">Card title</h5>
-                <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                <h5 class="card-title">{{ $taxon->common_name }}</h5>
+                <p class="card-text">Texte</p>
                 <a href="#" class="btn btn-primary">Go somewhere</a>
             </div>
         </div>
-        <div class="card" style="width: 18rem;">
-            <div style="height: 18rem;" id="map1"></div>
-            <div class="card-body">
-                <h5 class="card-title">Card title</h5>
-                <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-                <a href="#" class="btn btn-primary">Go somewhere</a>
-            </div>
-        </div>
-        <div class="card" style="width: 18rem;">
-            <div style="height: 18rem;" id="map2"></div>
-            <div class="card-body">
-                <h5 class="card-title">Card title</h5>
-                <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-                <a href="#" class="btn btn-primary">Go somewhere</a>
-            </div>
-        </div>
+        @endforeach
     </div>
 </div>
 
-@php
 
- $mapids=array("map0","map1","map2");
-@endphp
+@foreach ($taxa as $taxon)
 
-@foreach ( $mapids as $mapid )
+    @php
+    $observations=$taxon->observations->map(function ($observation) {
+    return  array ( 'latlng' => array($observation->latitude,$observation->longitude ));
+    });
 
+    @endphp
     @push('js')
         <script type="module">
-            <x-map :observations="$observations" :mapid="$mapid"></x-map>
+            <x-map :observations="$observations" :mapid="$loop->index"></x-map>
         </script>
     @endpush
 
 @endforeach
+
+<div>
+    {{ $taxa->links() }}
+</div>
+
 
 @endsection

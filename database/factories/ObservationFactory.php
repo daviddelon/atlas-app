@@ -23,8 +23,8 @@ class ObservationFactory extends Factory
             'observed_on' => fake()->date(),
             'observed_by' => fake()->randomNumber(),
             'license' => fake()->word(),
+            'latitude' => fake()->latitude(),
             'longitude' => fake()->longitude(),
-            'latitude' => fake()->latitude()
         ];
 
     }

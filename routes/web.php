@@ -1,6 +1,6 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\ObservationController;
+use App\Http\Controllers\TaxonController;
 
-Route::get('/', [ObservationController::class, 'index']);
+Route::get('/', [TaxonController::class, 'index']);
