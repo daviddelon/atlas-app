@@ -36,7 +36,7 @@ class TaxonSeeder extends Seeder
 
         foreach ($csv as $record) {
 
-            if ($record['taxon_id']!="") {// It can occurs, strange isn'it ?
+            if ($record['taxon_id']!="") {
 
                 Taxon::where('id',$record['taxon_id'] )->firstOr(function () use ($record, $api, $client) {
 

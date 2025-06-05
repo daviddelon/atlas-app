@@ -18,12 +18,12 @@ class TaxonController extends Controller
 
 
 
-        $taxa=Taxon::with(['observations'])
+        $taxa = Taxon::has('observations') // Important ! Sinon pas de sous-selection
+        ->with('observations')
         ->withCount('observations')
         ->orderBy('observations_count', 'desc')
-        ->orderBy('id', 'asc')  // pour éviter affichage en doublon sur la pagination !
+        ->orderBy('id', 'asc') // pour éviter affichage en doublon sur la pagination !
         ->simplePaginate(6);
-
 
 
         return view('home', [

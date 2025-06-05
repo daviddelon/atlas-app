@@ -17,7 +17,10 @@ class ObservationSeeder extends Seeder
     {
         //DB::table('observations')->delete();
 
-        $csv = Reader::createFromPath('/var/www/html/tmp/observations-582105.csv', 'r');
+        //$csv = Reader::createFromPath('/var/www/html/tmp/observations-582105.csv', 'r');
+
+        $csv = Reader::createFromPath('/var/www/html/tmp/test_reduit.csv', 'r');
+
         $csv->setHeaderOffset(0); //set the CSV header offset
         $csv->setEscape(''); //required in PHP8.4+ to avoid deprecation notices
 
