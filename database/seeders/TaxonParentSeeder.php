@@ -21,7 +21,7 @@ class TaxonSeeder extends Seeder
     {
 
 
-        //DB::table('taxa')->delete();
+        DB::table('taxa')->delete();
 
         $csv = Reader::createFromPath('/var/www/html/tmp/observations-582105.csv', 'r');
         $csv->setHeaderOffset(0); //set the CSV header offset

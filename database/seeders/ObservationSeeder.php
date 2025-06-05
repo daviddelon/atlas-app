@@ -15,9 +15,9 @@ class ObservationSeeder extends Seeder
      */
     public function run(): void
     {
-        DB::table('observations')->delete();
+        //DB::table('observations')->delete();
 
-        $csv = Reader::createFromPath('/var/www/html/tmp/test_reduit.csv', 'r');
+        $csv = Reader::createFromPath('/var/www/html/tmp/observations-582105.csv', 'r');
         $csv->setHeaderOffset(0); //set the CSV header offset
         $csv->setEscape(''); //required in PHP8.4+ to avoid deprecation notices
 
@@ -25,21 +25,26 @@ class ObservationSeeder extends Seeder
 
         foreach ($csv as $record) {
 
-            Observation::firstOrCreate(
-                [
-                'id' => $record['id']
-                ],
-                [
-                    'taxon_id' => $record['taxon_id'],
-                    'observed_on' => $record['observed_on'],
-                    'observed_by' => $record['user_id'],
-                    'license' => $record['license'],
-                    'latitude' => $record['latitude'],
-                    'longitude' => $record['longitude'],
-                    'created_at' => now(),
-                    'updated_at' => now()
-                ]
-            );
+
+            if ($record['taxon_id']!="") {
+
+                Observation::firstOrCreate(
+                    [
+                    'id' => $record['id']
+                    ],
+                    [
+                        'taxon_id' => $record['taxon_id'],
+                        'observed_on' => $record['observed_on'],
+                        'observed_by' => $record['user_id'],
+                        'license' => $record['license'],
+                        'latitude' => $record['latitude'],
+                        'longitude' => $record['longitude'],
+                        'created_at' => now(),
+                        'updated_at' => now()
+                    ]
+                );
+
+            }
 
         }
 

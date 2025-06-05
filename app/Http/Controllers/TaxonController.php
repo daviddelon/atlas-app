@@ -22,7 +22,7 @@ class TaxonController extends Controller
         ->withCount('observations')
         ->orderBy('observations_count', 'desc')
         ->orderBy('id', 'asc')  // pour éviter affichage en doublon sur la pagination !
-        ->simplePaginate(2);
+        ->simplePaginate(6);
 
 
 

@@ -3,23 +3,30 @@
 
 
 @section('content')
-<div class="container">
-    <div class="row">
 
-        @foreach ($taxa as $taxon)
-        <div class="card" style="width: 18rem;">
-            <div style="height: 18rem;" id="map{{ $loop->index }}"></div>
-            @if ($taxon->default_photo_url())
-                <img src={{ $taxon->default_photo_url() }}></img>
-            @endif
-            <div class="card-body">
-                <h5 class="card-title">{{ $taxon->common_name }}</h5>
-                <p class="card-text">Texte</p>
-                <a href="#" class="btn btn-primary">Go somewhere</a>
+
+<div class="container">
+    @foreach ($taxa as $taxon)
+        <div class="taxon-card">
+            <div class="row align-items-start">
+                <div class="col-md-3 mb-3 mb-md-0">
+                    @if ($taxon->default_photo_url())
+                        <img  class="taxon-img" alt="{{ $taxon->common_name }}" src={{ $taxon->default_photo_url() }}></img>
+                    @endif
+                </div>
+                <div class="col-md-5 mb-3 mb-md-0">
+                    <h5><em>{{ $taxon->scientific_name }}</em> L.</h5>
+                    <p><strong>{{ $taxon->common_name }}</strong></p>
+                    <p>
+                    Description
+                    </p>
+                </div>
+                <div class="col-md-4 mb-3 mb-md-0">
+                    <div class="taxon-map" id="map{{ $loop->index }}"></div>
+                </div>
             </div>
         </div>
-        @endforeach
-    </div>
+    @endforeach
 </div>
 
 
