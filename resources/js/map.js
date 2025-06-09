@@ -18,7 +18,7 @@ export function map_index(observations,mapid) {
 
     observations.map(function (item) {
 
-        L.circleMarker(item.latlng, {radius:2}).addTo(map);
+        L.circleMarker([item[0],item[1]], {radius:2}).addTo(map);
 
     });
 

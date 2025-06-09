@@ -20,7 +20,18 @@ class TaxonReferenceSeeder extends Seeder
     public function run(): void
     {
 
+/* Abandonne : prevu pour fonctionner avec cette table :
 
+    Schema::create('taxa', function (Blueprint $table) {
+            $table->id();
+            $table->string('scientific_name');
+            $table->string('common_name')->nullable();
+            $table->string('rank');
+            $table->unsignedBigInteger('parent_id')->nullable();
+            $table->timestamps();
+        });
+
+*/
 
         DB::disableQueryLog();
 
@@ -31,6 +42,7 @@ class TaxonReferenceSeeder extends Seeder
         $csv = Reader::createFromStream($stream);
         $csv->setHeaderOffset(0); //set the CSV header offset
         $csv->setEscape(''); //required in PHP8.4+ to avoid deprecation notices
+
 
 
 

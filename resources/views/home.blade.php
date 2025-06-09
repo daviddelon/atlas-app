@@ -5,6 +5,7 @@
 @section('content')
 
 
+
 <div class="container">
     @foreach ($taxa as $taxon)
         <div class="taxon-card">
@@ -34,7 +35,7 @@
 
     @php
     $observations=$taxon->observations->map(function ($observation) {
-        return  array ( 'latlng' => array($observation->latitude,$observation->longitude ));
+        return  array($observation->latitude,$observation->longitude );
     });
 
     @endphp

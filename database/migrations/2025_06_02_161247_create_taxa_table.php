@@ -14,9 +14,17 @@ return new class extends Migration
         Schema::create('taxa', function (Blueprint $table) {
             $table->id();
             $table->string('scientific_name');
-            $table->string('common_name')->nullable();
-            $table->string('rank');
-            $table->unsignedBigInteger('parent_id')->nullable();
+            $table->string('common_name');
+            $table->string('kingdom');
+            $table->string('phylum')->nullable();
+            $table->string('subphylum')->nullable();
+            $table->string('class')->nullable();
+            $table->string('subclass')->nullable();
+            $table->string('order')->nullable();
+            $table->string('suborder')->nullable();
+            $table->string('family')->nullable();
+            $table->string('subfamily')->nullable();
+
             $table->timestamps();
         });
     }

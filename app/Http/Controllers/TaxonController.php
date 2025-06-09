@@ -3,8 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Taxon;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 
 ;
 
@@ -13,21 +13,46 @@ class TaxonController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request$request )
     {
 
 
+    }
 
-        $taxa = Taxon::has('observations') // Important ! Sinon pas de sous-selection
-        ->with('observations')
-        ->withCount('observations')
-        ->orderBy('observations_count', 'desc')
-        ->orderBy('id', 'asc') // pour éviter affichage en doublon sur la pagination !
-        ->simplePaginate(6);
+     public function plantes(Request $request, string $class)
+    {
 
+        $classes=null;
+        switch ($class) {
+            case "angiospermes":
+                $classes=array("Magnoliopsida","Liliopsida");
+                break;
+            case "gymnospermes":
+                $classes=array("Pinopsida");
+                break;
+            case "fougeres":
+                $classes=array("Polypodiopsida");
+                break;
+            case "mousses":
+                $classes=array("Bryopsida","Jungermanniopsida","Marchantiopsida");
+                break;
+            default:
+                break;
+        }
+        $taxa = Taxon::whereHas('observations', function (Builder $query) use ($classes) {
+                $query
+                ->where('kingdom', "Plantae")
+                ->whereIn('class', $classes)
+                ;
+            })
+            ->with('observations')
+            ->withCount('observations')
+            ->orderBy('observations_count', 'desc')
+            ->orderBy('id', 'asc')  // pour éviter affichage en doublon sur la pagination !
+            ->simplePaginate(10);
 
         return view('home', [
-            'taxa'=>$taxa
+            'taxa' => $taxa,
         ]);
     }
 
@@ -53,7 +78,8 @@ class TaxonController extends Controller
      */
     public function show(Taxon $taxon)
     {
-        //
+
+
     }
 
     /**
