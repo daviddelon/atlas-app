@@ -12,6 +12,13 @@ class ObservationController extends Controller
      */
     public function index()
     {
+        $observations=Observation::all();
+
+
+        return view('tree.all', [
+            'observations' => $observations,
+        ]);
+
 
     }
 

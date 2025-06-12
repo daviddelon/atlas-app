@@ -15,7 +15,9 @@
     },
     "require-dev": {
         "barryvdh/laravel-debugbar": "^3.15",
+        "dantsu/php-osm-static-api": "^0.6.4",
         "fakerphp/faker": "^1.23",
+        "laravel-lang/common": "^6.7",
         "laravel/pail": "^1.2.2",
         "laravel/pint": "^1.13",
         "laravel/sail": "^1.41",

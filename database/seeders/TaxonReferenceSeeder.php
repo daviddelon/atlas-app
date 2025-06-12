@@ -36,6 +36,11 @@ class TaxonReferenceSeeder extends Seeder
         DB::disableQueryLog();
 
 
+
+
+        DB::table('observations')->delete();
+        DB::table('taxa')->delete();
+
         $stream = fopen('/var/www/html/tmp/dwca/taxa.csv', 'r'); // from https://www.inaturalist.org/taxa/inaturalist-taxonomy.dwca.zip
         // verna dans un fichier separe
 
@@ -62,13 +67,11 @@ class TaxonReferenceSeeder extends Seeder
 
              foreach ($chunk as $record) {
 
-                $parent_id = (int) substr(strrchr($record['parentNameUsageID'], '/'), 1);
 
                 $records [] = [
                 'id' => $record['id'],
                 'scientific_name' => $record['scientificName'],
                 'rank' => $record['taxonRank'],
-                'parent_id' => $parent_id,
                 'created_at' => now(),
                 'updated_at' => now()
                 ];

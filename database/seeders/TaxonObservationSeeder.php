@@ -12,7 +12,7 @@ use League\Csv\Reader;
 use League\Csv\Statement;
 use RestClient;
 
-class TaxonSeeder extends Seeder
+class TaxonObservationSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -28,6 +28,14 @@ class TaxonSeeder extends Seeder
         DB::table('observations')->delete();
         DB::table('taxa')->delete();
 
+        $communeGeom = DB::table('communes')
+            ->where('code', '34274')
+            ->value('geom');
+
+        if (!$communeGeom) {
+            throw new \Exception("Commune 34274 introuvable.");
+        }
+
         $stream = fopen('/var/www/html/tmp/observations-583469.csv', 'r');
         $csv = Reader::createFromStream($stream);
         $csv->setHeaderOffset(0); //set the CSV header offset
@@ -41,15 +49,6 @@ class TaxonSeeder extends Seeder
         $all = $stmt->process($csv);
 
 
-        /*
-        $api = new RestClient([
-            'base_url' => "https://api.inaturalist.org/v1/taxa",
-        ]);
-        */
-
-
-       // $client = new Client(); // Http client
-
 
         $previous_taxon_id=null;
 
@@ -59,14 +58,34 @@ class TaxonSeeder extends Seeder
             print "$i\n";
             $i=$i+10000;
 
-             $records=array();
+             $observation_records=array();
+             $observation_taxon_records=array();
+             $taxon_records=array();
 
              foreach ($chunk as $record) {
 
-                if ($record['taxon_id']!="") {
-                    if ($previous_taxon_id!=$record['taxon_id']) {
-                        $previous_taxon_id=$record['taxon_id'];
-                        $records [] = [
+                 if ($record['taxon_id']!="" && $record['taxon_species_name']!="")  {
+
+                    $pointWKT = "POINT({$record['longitude']} {$record['latitude']})";
+
+                    $isInside = DB::selectOne("
+                        SELECT ST_Contains(?, ST_SRID(ST_PointFromText(?), 4326)) AS inside", [$communeGeom, $pointWKT]);
+
+                    if ($isInside->inside) {
+
+                        $observation_records [] = [
+                            'id' => $record['id'],
+                            'taxon_id' => $record['taxon_id'],
+                            'observed_on' => $record['observed_on'],
+                            'observed_by' => $record['user_id'],
+                            'license' => $record['license'],
+                            'latitude' => $record['latitude'],
+                            'longitude' => $record['longitude'],
+                            'quality' =>($record['quality_grade']=='research')?'R':'N',
+                            'created_at' => now(),
+                            'updated_at' => now()
+                        ];
+                        $observation_taxon_records [] = [
                             'id' => $record['taxon_id'],
                             'scientific_name' => $record['scientific_name'],
                             'common_name' => $record['common_name'],
@@ -84,11 +103,46 @@ class TaxonSeeder extends Seeder
                         ];
                     }
                 }
+             }
+
+             if (!empty($observation_records)) {
+
+                foreach ($observation_records as $key=>$observation) {
+                    if ($previous_taxon_id!=$observation['taxon_id']) {
+                        $previous_taxon_id=$observation['taxon_id'];
+
+
+                        $taxon_records [] = [
+                            'id' => $observation_taxon_records[$key]['id'],
+                            'scientific_name' => $observation_taxon_records[$key]['scientific_name'],
+                            'common_name' => $observation_taxon_records[$key]['common_name'],
+                            'kingdom' => $observation_taxon_records[$key]['kingdom'],
+                            'phylum' => $observation_taxon_records[$key]['phylum'],
+                            'subphylum' => $observation_taxon_records[$key]['subphylum'],
+                            'class' => $observation_taxon_records[$key]['class'],
+                            'subclass' => $observation_taxon_records[$key]['subclass'],
+                            'order' => $observation_taxon_records[$key]['order'],
+                            'suborder' => $observation_taxon_records[$key]['suborder'],
+                            'family' => $observation_taxon_records[$key]['family'],
+                            'subfamily' => $observation_taxon_records[$key]['subfamily'],
+                            'created_at' => now(),
+                            'updated_at' => now()
+                        ];
+                    }
+
+                }
 
              }
 
-             DB::table('taxa')->insert($records);
 
+
+            if (!empty($taxon_records)) {
+                DB::table('taxa')->insert($taxon_records);
+            }
+
+            if (!empty($observation_records)) {
+                DB::table('observations')->insert($observation_records);
+            }
 
         }
 

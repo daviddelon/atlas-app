@@ -38,10 +38,10 @@
                             <a class="nav-link active" href="/plantes">Plantes</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="/Animalia">Animaux</a>
+                            <a class="nav-link" href="/animaux">Animaux</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="/Fungi">Champignons</a>
+                            <a class="nav-link" href="/champignons">Champignons</a>
                         </li>
                     </ul>
                 </div>

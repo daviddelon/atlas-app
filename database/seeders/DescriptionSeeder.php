@@ -13,7 +13,7 @@ use League\Csv\Reader;
 use League\Csv\Statement;
 use RestClient;
 
-class PhotoSeeder extends Seeder
+class DescriptionSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -43,9 +43,7 @@ class PhotoSeeder extends Seeder
             $records=array();
             $ids=array();
             foreach ($taxa as $taxon) {
-                if (!Storage::disk('public')->exists($taxon->id.'.jpg')) {
-                            $ids []=$taxon->id;
-                }
+                $ids []=$taxon->id;
             }
 
             if (!empty($ids)) {
@@ -59,10 +57,7 @@ class PhotoSeeder extends Seeder
                 foreach ($data->results as $index => $taxon) {
 
                     if (isset($taxon->default_photo)) {
-                        print $taxon->id."\n";
-                        $response = $client->get($taxon->default_photo->medium_url);
-                        $content=$response->getBody()->getContents();
-                        Storage::disk('public')->put($taxon->id.'.jpg',  $content);
+                        $description = $client->get($taxon->default_photo->medium_url);
                         $records [] = [
                             'id' => $taxon->default_photo->id,
                             'taxon_id' => $taxon->id,

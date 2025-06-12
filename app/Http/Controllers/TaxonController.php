@@ -45,16 +45,55 @@ class TaxonController extends Controller
                 ->whereIn('class', $classes)
                 ;
             })
-            ->with('observations')
+            ->with(['observations','photo'])
             ->withCount('observations')
             ->orderBy('observations_count', 'desc')
             ->orderBy('id', 'asc')  // pour éviter affichage en doublon sur la pagination !
-            ->simplePaginate(10);
+            ->paginate(10);
 
         return view('home', [
             'taxa' => $taxa,
         ]);
     }
+
+         public function animaux(Request $request, string $class)
+    {
+
+        $classes=null;
+        switch ($class) {
+            case "mammiferes":
+                $classes=array("Mammalia");
+                break;
+            case "oiseaux":
+                $classes=array("Aves");
+                break;
+            case "insectes":
+                $classes=array("Insecta");
+                break;
+            case "reptiles":
+                $classes=array("Reptilia");
+                break;
+            default:
+                break;
+        }
+        $taxa = Taxon::whereHas('observations', function (Builder $query) use ($classes) {
+                $query
+                ->where('kingdom', "Animalia")
+                ->whereIn('class', $classes)
+                ;
+            })
+            ->with(['observations','photo'])
+            ->withCount('observations')
+            ->orderBy('observations_count', 'desc')
+            ->orderBy('id', 'asc')  // pour éviter affichage en doublon sur la pagination !
+            ->paginate(10);
+
+        return view('home', [
+            'taxa' => $taxa,
+        ]);
+    }
+
+
 
 
     /**

@@ -14,6 +14,10 @@
                     @if ($taxon->default_photo_url())
                         <img  class="taxon-img" alt="{{ $taxon->common_name }}" src={{ $taxon->default_photo_url() }}></img>
                     @endif
+                    <div class="text-muted small mt-1">
+                        {{ $taxon->photo->author ?? ""}}
+                        {{ $taxon->photo->license ?? ""}}
+                    </div>
                 </div>
                 <div class="col-md-5 mb-3 mb-md-0">
                     <h5><em>{{ $taxon->scientific_name }}</em> L.</h5>
@@ -35,7 +39,7 @@
 
     @php
     $observations=$taxon->observations->map(function ($observation) {
-        return  array($observation->latitude,$observation->longitude );
+        return  array($observation->latitude,$observation->longitude,$observation->quality);
     });
 
     @endphp

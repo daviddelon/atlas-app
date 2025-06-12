@@ -16,6 +16,14 @@ class Taxon extends Model
         return $this->hasMany(Observation::class);
     }
 
+    public function photo() {
+        return $this->hasOne(Photo::class);
+    }
+
+    public function description() {
+        return $this->hasOne(Description::class);
+    }
+
     public function default_photo_url() {
 
         if (Storage::disk('public')->exists($this->id.'.jpg')) {

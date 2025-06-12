@@ -7,7 +7,6 @@
 
   <div class="row row-cols-1 row-cols-sm-2 g-2 justify-content-center" style="max-width: 820px; margin: 0 auto;">
 
-    <!-- Carte 1 -->
     <div class="col">
       <a href="/plantes/angiospermes" class="text-decoration-none">
         <div class="position-relative" style="width: 100%; height: 400px;">
@@ -17,7 +16,6 @@
       </a>
     </div>
 
-    <!-- Carte 2 -->
     <div class="col">
       <a href="/plantes/gymnospermes" class="text-decoration-none">
         <div class="position-relative" style="width: 100%; height: 400px;">
