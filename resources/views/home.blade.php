@@ -22,9 +22,9 @@
                 <div class="col-md-5 mb-3 mb-md-0">
                     <h5><em>{{ $taxon->scientific_name }}</em> L.</h5>
                     <p><strong>{{ $taxon->common_name }}</strong></p>
-                    <p>
-                    Description
-                    </p>
+                    <div>
+                        {!! $taxon->description->content ?? ""  !!}
+                    </div>
                 </div>
                 <div class="col-md-4 mb-3 mb-md-0">
                     <div class="taxon-map" id="map{{ $loop->index }}"></div>

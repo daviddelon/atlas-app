@@ -52,32 +52,36 @@ class PhotoSeeder extends Seeder
 
                 print "Sleep 4s \n";
                 sleep(4);
-                $data = $api->get(implode(",", $ids));
-                $data = $data->decode_response();
+                $result = $api->get(implode(",", $ids));
 
 
-                foreach ($data->results as $index => $taxon) {
+                if($result->info->http_code == 200) {
 
-                    if (isset($taxon->default_photo)) {
-                        print $taxon->id."\n";
-                        $response = $client->get($taxon->default_photo->medium_url);
-                        $content=$response->getBody()->getContents();
-                        Storage::disk('public')->put($taxon->id.'.jpg',  $content);
-                        $records [] = [
-                            'id' => $taxon->default_photo->id,
-                            'taxon_id' => $taxon->id,
-                            'author' => $taxon->default_photo->attribution_name,
-                            'license' =>  $taxon->default_photo->license_code,
-                            'created_at' => now(),
-                            'updated_at' => now()
+                    $data = $result->decode_response();
 
-                        ];
+                    foreach ($data->results as $index => $taxon) {
+
+                        if (isset($taxon->default_photo)) {
+                            print $taxon->id."\n";
+                            $response = $client->get($taxon->default_photo->medium_url);
+                            $content=$response->getBody()->getContents();
+                            Storage::disk('public')->put($taxon->id.'.jpg',  $content);
+                            $records [] = [
+                                'id' => $taxon->default_photo->id,
+                                'taxon_id' => $taxon->id,
+                                'author' => $taxon->default_photo->attribution_name,
+                                'license' =>  $taxon->default_photo->license_code,
+                                'created_at' => now(),
+                                'updated_at' => now()
+
+                            ];
+                        }
+
                     }
-
+                    if (!empty($records)) {
+                        DB::table('photos')->upsert($records,['id']);
+                    }
                 }
-                if (!empty($records)) {
-                    DB::table('photos')->upsert($records,['id']);
-             }
             }
 
         });

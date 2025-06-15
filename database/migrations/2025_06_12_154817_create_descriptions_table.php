@@ -15,7 +15,8 @@ return new class extends Migration
         Schema::create('descriptions', function (Blueprint $table) {
             $table->id();
             $table->foreignIdFor(Taxon::class)->constrained();
-            $table->longText('description');
+            $table->longText('content')->nullable();
+            $table->longText('wikipedia_extract')->nullable();
             $table->timestamps();
         });
     }
