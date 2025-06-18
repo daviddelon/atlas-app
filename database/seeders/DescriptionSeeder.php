@@ -42,8 +42,7 @@ class DescriptionSeeder extends Seeder
 
         Taxon::with('description')
         ->orderBy('id')
-        ->where('class','Magnoliopsida')
-        ->chunk(10, function (Collection $taxa) use ($api,&$i){
+        ->chunk(100, function (Collection $taxa) use ($api,&$i){
 
             print $i."\n";
 
@@ -52,7 +51,7 @@ class DescriptionSeeder extends Seeder
             foreach ($taxa as $taxon) {
 
                 print "Sleep 4s \n";
-                sleep(4);
+                sleep(2);
 
                 $wikipedia_extract=null;
                 if (!isset ($taxon->description->wikipedia_extract)) {
