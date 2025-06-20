@@ -4,11 +4,16 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Support\Facades\Storage;
+use Maize\Markable\Markable;
+use Maize\Markable\Models\Like;
 
 class Taxon extends Model
 {
     use HasFactory;
+
+    use Markable;
 
     protected $fillable = [ 'scientific_name', 'common_name'];
 
@@ -31,5 +36,15 @@ class Taxon extends Model
         }
         else return null;
     }
+
+
+    public function like(): MorphOne {
+        return $this->morphOne(Like::class, 'markable');
+    }
+
+    protected static $marks = [
+        Like::class
+    ];
+
 
 }

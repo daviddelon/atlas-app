@@ -46,18 +46,20 @@ class TaxonController extends Controller
                 ->whereIn('class', $classes)
                 ;
             })
-            ->with(['observations','photo','description'])
+            ->with(['observations','photo','description','like'])
             ->withCount('observations')
-            ->orderBy('observations_count', 'desc')
+            //->orderBy('observations_count', 'desc')
             ->orderBy('id', 'asc')  // pour éviter affichage en doublon sur la pagination !
             ->paginate(10);
 
+            /*
         $converter = new CommonMarkConverter(['html_input' => 'strip']);
         foreach ($taxa as $taxon) {
             if (!empty($taxon->description->content)) {
                 $taxon->description->content=$converter->convert($taxon->description->content);
             }
         }
+            */
         return view('home', [
             'taxa' => $taxa,
         ]);
@@ -89,19 +91,19 @@ class TaxonController extends Controller
                 ->whereIn('class', $classes)
                 ;
             })
-            ->with(['observations','photo','description'])
+            ->with(['observations','photo','description','like'])
             ->withCount('observations')
             ->orderBy('observations_count', 'desc')
             ->orderBy('id', 'asc')  // pour éviter affichage en doublon sur la pagination !
             ->paginate(10);
 
-
+/*
         $converter = new CommonMarkConverter(['html_input' => 'strip']);
         foreach ($taxa as $taxon) {
             if (!empty($taxon->description->content)) {
                 $taxon->description->content=$converter->convert($taxon->description->content);
             }
-        }
+        }*/
 
 
         return view('home', [

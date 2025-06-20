@@ -3,7 +3,10 @@
 use App\Http\Controllers\ObservationController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\TaxonController;
+use Illuminate\Support\Facades\Auth;
 
+
+Auth::loginUsingId(1); // hack
 
 Route::get('/', function () {
     return redirect('/plantes');

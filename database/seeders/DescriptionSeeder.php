@@ -34,100 +34,116 @@ class DescriptionSeeder extends Seeder
 
         $api = new RestClient([
             'base_url' => "https://fr.wikipedia.org/api/rest_v1/page/summary",
+            'user_agent' => env('wikipedia_user_agent')
         ]);
 
 
         $i=0;
 
 
-        Taxon::with('description')
+        Taxon::with('description','like')
         ->orderBy('id')
-        ->chunk(100, function (Collection $taxa) use ($api,&$i){
+        ->chunk(50, function (Collection $taxa) use ($api,&$i){
 
             print $i."\n";
 
-            $i=$i+20;
+            $i=$i+50;
+
+
+            $records=array();
 
             foreach ($taxa as $taxon) {
 
-                print "Sleep 4s \n";
-                sleep(2);
 
-                $wikipedia_extract=null;
-                if (!isset ($taxon->description->wikipedia_extract)) {
-                    $result = $api->get(str_replace(' ', '_', ($taxon->common_name)));
-                    if ($result->info->http_code == 200) {
-                        $data = $result->decode_response();
-                        $wikipedia_extract=$data->extract;
+                    if (isset ($taxon->like)) { // On ne cherche que les taxons marques comme tels
+
+
+                    $wikipedia_extract=null;
+                    if (!isset ($taxon->description->wikipedia_extract)) {
+                        $result = $api->get(urlencode(str_replace(' ', '_', ($taxon->common_name))));
+                        if ($result->info->http_code == 200) {
+                            $data = $result->decode_response();
+                            $wikipedia_extract=$data->extract;
+                        }
                     }
+                    else {
+                        print "Existing Wikipeda extract \n";
+                        $wikipedia_extract=$taxon->description->wikipedia_extract;
+                    }
+
+
+                    if ($wikipedia_extract!=null) {
+
+                        print $taxon->common_name."\n";
+                        print $taxon->id."\n";
+
+                        $content = <<<EOT
+
+
+
+                        Tu es un expert naturaliste. Rédige une fiche descriptive pour "$taxon->common_name", en HTML uniquement.
+
+                        Contraintes :
+                        - Le texte ne doit pas être encadré par des balises ```html ou autre (aucun encadrement).
+                        - Ne répète ni le nom scientifique, ni le nom français, ni de titre dans la description.
+                        - Ne commence pas par un titre global.
+                        - Structure le contenu avec des paragraphes thématiques.
+                        - Chaque paragraphe doit commencer par un titre fort en gras, suivi d’un court texte informatif.
+                        - Titres suggérés : Aspect, Habitat, Floraison (si plante), Comportement (si animal), Toxicité (si pertinent), Cycle, etc.
+                        - Adapte les rubriques en fonction de l’espèce (plante, animal, etc.).
+                        - N’ajoute aucune source, balise, note, ou commentaire.
+                        - Sois très concis : tout le texte doit tenir en 400 caractères (espaces compris).
+                        - Utilise un français simple, rigoureux, sans fioritures, ni sources, ni balises techniques.
+                        - Toutes les phrases doivent être compréhensibles en français courant.
+                        - Utilise un vocabulaire simple, adapté au grand public, sans jargon scientifique.
+                        - Rédige uniquement en français. N’utilise aucun mot étranger.
+                        - Aucun commentaire ou texte explicatif hors contenu.
+
+
+                        Voici un résumé Wikipédia :
+                        $wikipedia_extract
+
+
+                        EOT;
+
+
+                        //$model = 'mistralai/mistral-7b-instruct:free';
+                        //$model = 'deepseek/deepseek-r1-0528-qwen3-8b:free';
+                        $model = 'openai/gpt-4.1-nano';
+                        $messageData = new MessageData(
+                            content: $content,
+                            role: RoleType::USER,
+                        );
+
+                        $chatData = new ChatData(
+                        messages: [
+                            $messageData,
+                        ],
+                        model: $model,
+                        max_tokens: 3000,
+                        );
+
+                        $chatResponse = LaravelOpenRouter::chatRequest($chatData);
+                        $content = Arr::get($chatResponse->choices[0], 'message.content');
+
+                        print $content."\n";
+
+                        $records [] = [
+                        'id' => $taxon->description->id ?? null,
+                        'taxon_id' => $taxon->id,
+                        'content'=> $content,
+                        'wikipedia_extract' => $wikipedia_extract,
+                        'created_at' => now(),
+                        'updated_at' => now()
+
+                    ];
+
+                    }
+                    else {
+                        print "No Wikipedia extract for $taxon->common_name\n";
+                    }
+
                 }
-                else {
-                    print "Existing Wikipeda extract \n";
-                    $wikipedia_extract=$taxon->description->wikipedia_extract;
-                }
-
-
-                if ($wikipedia_extract!=null) {
-
-                    print $taxon->common_name."\n";
-
-                    $content = <<<EOT
-                    Tu es un expert naturaliste. Rédige une fiche descriptive au format markdown pour "$taxon->common_name".
-
-                    Contraintes :
-                    - N'encadre pas le résultat avec des balises ```markdown ou ``` (aucun encadrement).
-                    - Ne commence pas par un titre général.
-                    - Le contenu concerne uniquement la description
-                    - N'utilise pas le nom scientifique ni le nom français dans la description, donne juste la description
-                    - Sois très concis : tout le texte doit tenir en 400 caractères (espaces compris).
-                    - Utilise un style naturaliste rigoureux, informatif, sans fioritures ni sources.
-                    - Aucun ajout hors contenu : pas de balise, ni commentaire.
-                    - Veille à ce que chaque phrase est une signification en langue française.
-                    - Respecte l’orthographe scientifique et syntaxe claire.
-                    - Utilise uniquement la langue française, n'utilise pas de mots anglais ni d'une autre langue.
-                    - Retourne à la ligne quand il le faut pour rendre plus lisible le texte à l'écran. Utilise la syntaxe Markdown avec \ en fin de ligne pour cela.
-                    - Utilse un vocabulaire grand public sans terme technique.
-
-                    Voici un résumé Wikipédia :
-                    $wikipedia_extract
-                    EOT;
-
-
-                    //$model = 'mistralai/mistral-7b-instruct:free';
-                    //$model = 'deepseek/deepseek-r1-0528-qwen3-8b:free';
-                    $model = 'openai/gpt-4.1-nano';
-                    $messageData = new MessageData(
-                        content: $content,
-                        role: RoleType::USER,
-                    );
-
-                    $chatData = new ChatData(
-                    messages: [
-                        $messageData,
-                    ],
-                    model: $model,
-                    max_tokens: 3000,
-                    );
-
-                    $chatResponse = LaravelOpenRouter::chatRequest($chatData);
-                    $content = Arr::get($chatResponse->choices[0], 'message.content');
-
-                    print($content);
-                    $records [] = [
-                    'id' => $taxon->description->id ?? null,
-                    'taxon_id' => $taxon->id,
-                    'content'=> $content,
-                    'wikipedia_extract' => $wikipedia_extract,
-                    'created_at' => now(),
-                    'updated_at' => now()
-
-                ];
-
-                }
-                else {
-                    print "No Wikipedia extract for $taxon->common_name\n";
-                }
-
 
             }
 
@@ -135,7 +151,6 @@ class DescriptionSeeder extends Seeder
             if (!empty($records)) {
                  DB::table('descriptions')->upsert($records,['id']);
             }
-            exit;
 
 
         });

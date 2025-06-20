@@ -23,6 +23,7 @@
                     <h5><em>{{ $taxon->scientific_name }}</em> L.</h5>
                     <p><strong>{{ $taxon->common_name }}</strong></p>
                     <div>
+                        <livewire:like :taxon="$taxon" />
                         {!! $taxon->description->content ?? ""  !!}
                     </div>
                 </div>
