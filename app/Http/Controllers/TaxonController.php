@@ -11,6 +11,28 @@ use League\CommonMark\CommonMarkConverter;
 
 class TaxonController extends Controller
 {
+
+
+    private const KINGDOMS = [
+        'plantes' => 'Plantae',
+        'animaux' => 'Animalia',
+    ];
+
+    public const GROUPS = [
+        'Plantae' => [
+            'angiospermes' => ['Magnoliopsida', 'Liliopsida'],
+            'gymnospermes' => ['Pinopsida'],
+            'fougeres'      => ['Polypodiopsida'],
+            'mousses'       => ['Bryopsida', 'Jungermanniopsida', 'Marchantiopsida'],
+        ],
+        'Animalia' => [
+            'mammiferes' => ['Mammalia'],
+            'oiseaux'    => ['Aves'],
+            'insectes'   => ['Insecta'],
+            'reptiles'   => ['Reptilia'],
+        ]
+    ];
+
     /**
      * Display a listing of the resource.
      */
@@ -20,95 +42,30 @@ class TaxonController extends Controller
 
     }
 
-     public function plantes(Request $request, string $class)
+
+
+    public function taxaParClasse(Request $request, string $kingdom, string $group)
     {
 
-        $classes=null;
-        switch ($class) {
-            case "angiospermes":
-                $classes=array("Magnoliopsida","Liliopsida");
-                break;
-            case "gymnospermes":
-                $classes=array("Pinopsida");
-                break;
-            case "fougeres":
-                $classes=array("Polypodiopsida");
-                break;
-            case "mousses":
-                $classes=array("Bryopsida","Jungermanniopsida","Marchantiopsida");
-                break;
-            default:
-                break;
+        $kingdom = self::KINGDOMS[$kingdom] ?? null;
+        $classes = self::GROUPS[$kingdom][$group] ?? null;
+
+
+        if (!$classes) {
+            abort(404, "Groupe taxonomique inconnu");
         }
-        $taxa = Taxon::whereHas('observations', function (Builder $query) use ($classes) {
+
+        $taxa = Taxon::whereHas('observations', function (Builder $query) use ($classes, $kingdom) {
                 $query
-                ->where('kingdom', "Plantae")
-                ->whereIn('class', $classes)
-                ;
+                    ->where('kingdom', $kingdom)
+                    ->whereIn('class', $classes);
             })
-            ->with(['observations','photo','description','like'])
+            ->with(['observations', 'photo', 'description', 'like'])
             ->withCount('observations')
-            //->orderBy('observations_count', 'desc')
-            ->orderBy('id', 'asc')  // pour éviter affichage en doublon sur la pagination !
+            ->orderBy('id', 'asc')
             ->paginate(10);
 
-            /*
-        $converter = new CommonMarkConverter(['html_input' => 'strip']);
-        foreach ($taxa as $taxon) {
-            if (!empty($taxon->description->content)) {
-                $taxon->description->content=$converter->convert($taxon->description->content);
-            }
-        }
-            */
-        return view('home', [
-            'taxa' => $taxa,
-        ]);
-    }
-
-         public function animaux(Request $request, string $class)
-    {
-
-        $classes=null;
-        switch ($class) {
-            case "mammiferes":
-                $classes=array("Mammalia");
-                break;
-            case "oiseaux":
-                $classes=array("Aves");
-                break;
-            case "insectes":
-                $classes=array("Insecta");
-                break;
-            case "reptiles":
-                $classes=array("Reptilia");
-                break;
-            default:
-                break;
-        }
-        $taxa = Taxon::whereHas('observations', function (Builder $query) use ($classes) {
-                $query
-                ->where('kingdom', "Animalia")
-                ->whereIn('class', $classes)
-                ;
-            })
-            ->with(['observations','photo','description','like'])
-            ->withCount('observations')
-            ->orderBy('observations_count', 'desc')
-            ->orderBy('id', 'asc')  // pour éviter affichage en doublon sur la pagination !
-            ->paginate(10);
-
-/*
-        $converter = new CommonMarkConverter(['html_input' => 'strip']);
-        foreach ($taxa as $taxon) {
-            if (!empty($taxon->description->content)) {
-                $taxon->description->content=$converter->convert($taxon->description->content);
-            }
-        }*/
-
-
-        return view('home', [
-            'taxa' => $taxa,
-        ]);
+        return view('home', compact('taxa'));
     }
 
 
