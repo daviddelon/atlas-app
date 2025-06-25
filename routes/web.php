@@ -14,9 +14,12 @@ Route::get('/', function () {
     return redirect('/plantes');
 });
 
+Route::get('/plantes/angiospermes', function () {
+    return redirect('/plantes/angiospermes/orchidees');
+});
+
 
 // Route::get('/all', [ObservationController::class,  'index']);   DEBUG
-
 
 
 Route::get('/plantes', function () {
@@ -38,6 +41,5 @@ Route::get('/animaux', function () {
 //Route::get('/{kingdom}', [TaxonController::class, 'kingdom'])
   //  ->where('kingdom', '^(Plantae|Animalia|Fungi)$');
 
-  Route::get('/{kingdom}/{class}', [TaxonController::class, 'taxaParClasse'])
-    ->where('kingdom', 'plantes|animaux')
-    ->name('taxons.classe');
+Route::get('/{kingdom}/{class}/{family?}', [TaxonController::class, 'taxaFiltre'])
+    ->where('kingdom', 'plantes|animaux');

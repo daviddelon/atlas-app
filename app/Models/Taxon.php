@@ -37,6 +37,16 @@ class Taxon extends Model
         else return null;
     }
 
+    public function observedPeriod()
+    {
+        $dates = $this->observations->pluck('observed_on')->filter(); // filter pour enlelever les nulls
+        return $dates->isNotEmpty() ? ['start' => $dates->min(), 'end' => $dates->max()] : null;
+    }
+
+    public function observersCount()
+    {
+        return $this->observations->pluck('observed_by')->filter()->unique()->count(); // filter pour enlelever les nulls
+    }
 
     public function like(): MorphOne {
         return $this->morphOne(Like::class, 'markable');

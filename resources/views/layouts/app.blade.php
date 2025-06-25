@@ -27,24 +27,6 @@
                 <a class="navbar-brand" href="{{ url('/') }}">
                     {{ config('app.name', 'Titre à renseigner dans .env') }}
                 </a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="{{ __('Toggle navigation') }}">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-
-                <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                    <!-- Left Side Of Navbar -->
-                    <ul class="navbar-nav me-auto">
-                        <li class="nav-item">
-                            <a class="nav-link active" href="/plantes">Plantes</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="/animaux">Animaux</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="/champignons">Champignons</a>
-                        </li>
-                    </ul>
-                </div>
             </div>
         </nav>
 
