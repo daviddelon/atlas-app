@@ -28,7 +28,7 @@ class TaxonSeeder extends Seeder
         DB::table('observations')->delete();
         DB::table('taxa')->delete();
 
-        $stream = fopen('/var/www/html/tmp/observations-583469.csv', 'r');
+        $stream = fopen('/var/www/html/tmp/observations-658902.csv', 'r');
         $csv = Reader::createFromStream($stream);
         $csv->setHeaderOffset(0); //set the CSV header offset
         $csv->setEscape(''); //required in PHP8.4+ to avoid deprecation notices

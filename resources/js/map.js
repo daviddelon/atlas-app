@@ -3,7 +3,6 @@
 export function map_index(observations,mapid) {
 
     var map = L.map("map"+mapid, {
-        center: [43.78, 3.76],
         zoom: 11,
         scrollWheelZoom: false
     });
@@ -16,8 +15,8 @@ export function map_index(observations,mapid) {
         attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
     }).addTo(map);
 
-     // Charger le GeoJSON
-    fetch('/storage/34274.geojson')
+     // Charger le GeoJSON Contour de Commune
+    fetch('/storage/34343.geojson')
         .then(response => response.json())
         .then(data => {
             var layer = L.geoJSON(data, {

@@ -10,8 +10,9 @@ use Illuminate\Support\Facades\Auth;
 
 //Auth::logout();
 
+
 Route::get('/', function () {
-    return redirect('/plantes');
+    return view('home');
 });
 
 Route::get('/plantes/angiospermes', function () {

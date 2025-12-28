@@ -1,12 +1,12 @@
 @php
   $categories = [
-    ['url' => '/plantes/angiospermes/orchidees', 'img' => '59339.jpg', 'label' => 'Orchidées'],
-    ['url' => '/plantes/angiospermes/lamiacees', 'img' => '55459.jpg', 'label' => 'Lamiacées'],
-    ['url' => '/plantes/angiospermes/asteracees', 'img' => '52588.jpg', 'label' => 'Asteracées'],
+    ['url' => '/plantes', 'img' => '202282.jpg', 'label' => 'Plantes'],
+    ['url' => '/animaux', 'img' => '925661.jpg', 'label' => 'Animaux'],
+    ['url' => '/champignons', 'img' => '47348.jpg', 'label' => 'Champignons'],
   ];
 @endphp
 
-<div class="container-fluid bg-light py-3 mb-4">
+<div class="container-fluid bg-light border-top  py-3 mb-4">
   <div class="container">
     <div class="d-flex justify-content-center flex-wrap gap-3">
       @foreach($categories as $cat)

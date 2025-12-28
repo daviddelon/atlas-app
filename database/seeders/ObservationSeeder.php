@@ -24,14 +24,14 @@ class ObservationSeeder extends Seeder
         DB::table('observations')->delete();
 
         $communeGeom = DB::table('communes')
-            ->where('code', '34274')
+            ->where('code', '34343')
             ->value('geom');
 
         if (!$communeGeom) {
-            throw new \Exception("Commune 34274 introuvable.");
+            throw new \Exception("Commune 34343 introuvable.");
         }
 
-        $stream = fopen('/var/www/html/tmp/observations-583469.csv', 'r');
+        $stream = fopen('/var/www/html/tmp/observations-658902.csv', 'r');
         $csv = Reader::createFromStream($stream);
         $csv->setHeaderOffset(0); //set the CSV header offset
         $csv->setEscape(''); //required in PHP8.4+ to avoid deprecation notices

@@ -94,6 +94,7 @@ class TaxonController extends Controller
     {
 
 
+
         $kingdom = self::KINGDOMS[$kingdom_slug] ?? null;
         $classes = self::CLASSES[$class_slug] ?? null;
         $family = self::FAMILIES[$family_slug] ?? null;
@@ -116,7 +117,8 @@ class TaxonController extends Controller
             ->orderBy('id', 'asc')
             ->paginate(10);
 
-        return view('atlas', compact('taxa'));
+        $vue = $request->query('vue', 'default');
+        return view('atlas', compact('taxa', 'vue'));
     }
 
 

@@ -3,7 +3,7 @@
 @section('content')
     <div class="container">
         <div class="row">
-            @include('tree.vivant')
+            @include('tree.mini.vivant')
             <main class="col-md-12">
 
                 @php

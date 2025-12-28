@@ -20,7 +20,7 @@
                 @default
             @endSwitch
 
-            <main class="col-md-10">
+            <main class="col-md-12">
                 @foreach ($taxa as $taxon)
                     <div class="mb-4 border rounded-3 p-3 shadow-sm">
                         <div class="row align-items-start">
