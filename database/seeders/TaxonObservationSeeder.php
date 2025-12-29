@@ -1,5 +1,26 @@
 <?php
 
+/**
+ * TaxonObservationSeeder
+ *
+ * Ce seeder importe des données d'observations et de taxons à partir d'un fichier CSV.
+ * Il filtre les observations pour ne conserver que celles situées dans une commune spécifique (code 34343).
+ *
+ * Fonctionnement :
+ * - Suppression des données existantes dans les tables observations et taxa
+ * - Lecture du fichier CSV observations-658902.csv
+ * - Vérification géospatiale : seules les observations dans la commune sont conservées
+ * - Insertion par chunks de 10000 enregistrements pour optimisation
+ * - Création des enregistrements taxons et observations
+ *
+ * Dépendances :
+ * - Fichier CSV : /var/www/html/data/observations-658902.csv
+ * - Commune avec code 34343 dans la base de données
+ * - Extensions Mysql pour les fonctions spatiales (ST_Contains, etc.)
+ *
+ * @package Database\Seeders
+ */
+
 namespace Database\Seeders;
 
 use App\Models\Taxon;
@@ -36,7 +57,7 @@ class TaxonObservationSeeder extends Seeder
             throw new \Exception("Commune 34343 introuvable.");
         }
 
-        $stream = fopen('/var/www/html/tmp/observations-658902.csv', 'r');
+        $stream = fopen('/var/www/html/data/observations-658902.csv', 'r');
         $csv = Reader::createFromStream($stream);
         $csv->setHeaderOffset(0); //set the CSV header offset
         $csv->setEscape(''); //required in PHP8.4+ to avoid deprecation notices
@@ -68,6 +89,7 @@ class TaxonObservationSeeder extends Seeder
 
                     $pointWKT = "POINT({$record['longitude']} {$record['latitude']})";
 
+                    // Observation dans la zone de réference ?
                     $isInside = DB::selectOne("
                         SELECT ST_Contains(?, ST_SRID(ST_PointFromText(?), 4326)) AS inside", [$communeGeom, $pointWKT]);
 
@@ -145,42 +167,6 @@ class TaxonObservationSeeder extends Seeder
             }
 
         }
-
-
-                /*
-                Taxon::where('id',$record['taxon_id'] )->firstOr(function () use ($record) {
-*/
-                    /*
-                    if (! Storage::disk('public')->exists($record['taxon_id'].'.jpg')) {
-
-                        echo $record['taxon_id']."\n";
-                        echo "Pause 5 secondes \n";
-                        sleep(5); // 60 requests per minute max for Inat.
-
-                        $result = $api->get($record['taxon_id']);
-
-                        if($result->info->http_code == 200) {
-                            $default_photo_url=$result->decode_response()->results[0]->default_photo->medium_url;
-                            $response = $client->get($default_photo_url);
-                            $content=$response->getBody()->getContents();
-                                Storage::disk('public')->put($record['taxon_id'].'.jpg',  $content);
-                        }
-                    }
-                        */
-
-/*
-                    return Taxon::create([
-                        'id' => $record['taxon_id'],
-                        'scientific_name' => $record['scientific_name'],
-                        'common_name' => $record['common_name'],
-                        'kingdom' => $record['taxon_kingdom_name'],
-                        'created_at' => now(),
-                        'updated_at' => now()
-                    ]);
-                });
-                */
-
-
 
 
 

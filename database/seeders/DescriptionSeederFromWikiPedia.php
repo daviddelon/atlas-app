@@ -1,5 +1,31 @@
 <?php
 
+/**
+ * DescriptionSeeder
+ *
+ * Ce seeder ajoute des descriptions enrichies à la table descriptions en utilisant des extraits de Wikipedia
+ * améliorés par intelligence artificielle via Openrouter. Seuls les taxons marqués d'un "like" sont traités.
+ *
+ * Fonctionnement :
+ * - Récupération des taxons par chunks de 50 pour optimisation
+ * - Consultation de l'API Wikipedia pour obtenir un extrait si non existant
+ * - Génération d'une description structurée en HTML via IA
+ * - Mise à jour upsert dans la table descriptions
+ *
+ * Dépendances :
+ * - API Wikipedia (fr.wikipedia.org)
+ * - Service Openrouter pour l'IA
+ * - Modèles Taxon et Description
+ *
+ *  Ce seeder n'est plus utilisé, car : les pages Wikipedia sont souvents absentes, pas forcemment en français, et le résultat du passage en LLM comprenait
+ *  souvent des grossières erreurs, pas systématiquement, mais de façon aléatoire ce qui rend difficile l'obtention d'un résultat fiable. Le marquaqe par un
+ *  Like, par l'administrateur, permettait de ne mettre à jour que les taxons marqués comme tels, les autres déscriptions pouvant être considérées comme bonne, ou
+ *  alors pouvant être modifiées manuellement.
+ *  Ce seeder est gardé comme référence, pour une reprise avec un autre base de description (flore de Coste)
+ *
+ * @package Database\Seeders
+ */
+
 namespace Database\Seeders;
 
 use App\Models\Taxon;
@@ -19,7 +45,7 @@ use MoeMizrak\LaravelOpenrouter\Facades\LaravelOpenRouter;
 use MoeMizrak\LaravelOpenrouter\Types\RoleType;
 use RestClient;
 
-class DescriptionSeeder extends Seeder
+class DescriptionSeederFromWikiPedia extends Seeder
 {
     /**
      * Run the database seeds.
@@ -55,7 +81,7 @@ class DescriptionSeeder extends Seeder
             foreach ($taxa as $taxon) {
 
 
-                    if (isset ($taxon->like)) { // On ne cherche que les taxons marques comme tels
+                    if (isset ($taxon->like)) { // On ne cherche que les taxons marques comme à mettre à jour
 
 
                     $wikipedia_extract=null;
