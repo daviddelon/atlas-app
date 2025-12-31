@@ -1,7 +1,7 @@
 <?php
 
 /**
- * DescriptionSeeder
+ * DescriptionSeederFromWikiPedia
  *
  * Ce seeder ajoute des descriptions enrichies à la table descriptions en utilisant des extraits de Wikipedia
  * améliorés par intelligence artificielle via Openrouter. Seuls les taxons marqués d'un "like" sont traités.
