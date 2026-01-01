@@ -1,7 +1,7 @@
 <?php
 
 /**
- * DescriptionSeederFromCoste
+ * DescriptionFromCosteSeeder
  *
  * Ce seeder ajoute des descriptions enrichies à la table descriptions en utilisant les descriptions issues de la flore de Coste (domaine public). Ces descriptions
  *  sont stockes dans un base sqlite, calque du fichier export de la bdtxf (version V9_00) de Tela Botanica, augmenté des description récupérés depuis l'api
@@ -39,7 +39,7 @@ use MoeMizrak\LaravelOpenrouter\Facades\LaravelOpenRouter;
 use MoeMizrak\LaravelOpenrouter\Types\RoleType;
 use RestClient;
 
-class DescriptionSeederFromCoste extends Seeder
+class DescriptionFromCosteSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -75,6 +75,15 @@ class DescriptionSeederFromCoste extends Seeder
                     ];
                     $chunkMatches++;
                     $totalMatches++;
+                }
+                else {
+                     $records [] = [
+                        'taxon_id' => $taxon->id,
+                        'content' => 'No description available (unknow name)',
+                        'created_at' => now(),
+                        'updated_at' => now()
+                    ];
+
                 }
             }
 

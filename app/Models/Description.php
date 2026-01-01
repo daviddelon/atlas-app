@@ -18,8 +18,8 @@ class Description extends Model
         $desc = $parts[0];
         $rest = $parts[1] ?? '';
 
-        // Remove title from desc (assuming it starts with ** and ends with . – )
-        $desc = preg_replace('/^\*\*.*?\*\* .*?\. – /', '', $desc);
+        // Remove title from desc (assuming it starts with ** and ends with – )
+        $desc = preg_replace('/^\*\*.*?\*\* .*? – /', '', $desc);
 
         // Remove // separators
         $desc = str_replace('//', '', $desc);

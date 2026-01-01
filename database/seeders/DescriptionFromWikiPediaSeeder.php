@@ -45,7 +45,7 @@ use MoeMizrak\LaravelOpenrouter\Facades\LaravelOpenRouter;
 use MoeMizrak\LaravelOpenrouter\Types\RoleType;
 use RestClient;
 
-class DescriptionSeederFromWikiPedia extends Seeder
+class DescriptionFromWikiPediaSeeder extends Seeder
 {
     /**
      * Run the database seeds.

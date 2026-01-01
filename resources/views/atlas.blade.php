@@ -26,7 +26,7 @@
                         <div class="row align-items-start">
                             <!-- Colonne gauche : nom + photo -->
                             <div class="col-md-4 mb-3 mb-md-0">
-                                <p class="fw-bold mb-1" style="font-size: 1.3em; color: #2d5a27;">{{ $taxon->common_name }}</p>
+                                <p class="fw-bold mb-1" style="font-size: 1.3em; color: #2d5a27;">{{ ucfirst($taxon->common_name) }}</p>
                                 <h6 class="mb-3 text-muted"><em>{{ $taxon->scientific_name }}</em></h6>
                                 @if ($taxon->default_photo_url())
                                     <img class="w-100 rounded shadow" style="height: 400px; object-fit: cover;"
@@ -49,8 +49,8 @@
                             </div>
 
                             <!-- Colonne droite : carte -->
-                            <div class="col-md-4 mb-3 mb-md-0" style="padding-top: 70px;">
-                                <div class="w-100 rounded" style="height: 350px;" id="map{{ $taxon->id }}"></div>
+                            <div class="col-md-4 mb-3 mb-md-0" style="padding-top: 10px;">
+                                <div class="w-100 rounded" style="height: 500px;" id="map{{ $taxon->id }}"></div>
                             </div>
                         </div>
                     </div>

@@ -45,7 +45,8 @@ class TaxonObservationSeeder extends Seeder
         DB::disableQueryLog();
 
 
-
+        DB::table('photos')->delete();
+        DB::table('descriptions')->delete();
         DB::table('observations')->delete();
         DB::table('taxa')->delete();
 
@@ -85,7 +86,7 @@ class TaxonObservationSeeder extends Seeder
 
              foreach ($chunk as $record) {
 
-                 if ($record['taxon_id']!="" && $record['taxon_species_name']!="")  {
+                 if ($record['taxon_id']!="" && $record['taxon_species_name']!="" && $record['taxon_kingdom_name']=='Plantae') {
 
                     $pointWKT = "POINT({$record['longitude']} {$record['latitude']})";
 
