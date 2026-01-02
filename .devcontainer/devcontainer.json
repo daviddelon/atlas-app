@@ -13,11 +13,12 @@
 				"Porifa.laravel-intelephense",
 				"bmewburn.vscode-intelephense-client",
 				"HTMLHint.vscode-htmlhint",
-				"Scotthew.go-nav-bar", // Navigation
-				"saoudrizwan.claude-dev",  // Cline
-				"EdwinKofler.vscode-hyperupcall-pack-markdown", // Package Markdown
-                "mtxr.sqltools", // Sql tools
-                "mtxr.sqltools-driver-mysql" // driver mysql pour sql tools
+				"Scotthew.go-nav-bar",
+				"saoudrizwan.claude-dev",
+				"EdwinKofler.vscode-hyperupcall-pack-markdown",
+				"mtxr.sqltools",
+				"mtxr.sqltools-driver-mysql",
+				"sst-dev.opencode"
 			],
 			"settings": {}
 		}

@@ -1,7 +1,7 @@
 services:
     laravel.test:
         build:
-            context: './docker/8.4_opencode'
+            context: './docker/8.4-opencode'
             dockerfile: Dockerfile
             args:
                 WWWGROUP: '${WWWGROUP}'
@@ -19,6 +19,7 @@ services:
             IGNITION_LOCAL_SITES_PATH: '${PWD}'
         volumes:
             - '.:/var/www/html'
+            - './.config/opencode:/home/sail/.config/opencode:rw'
         networks:
             - sail
         depends_on:

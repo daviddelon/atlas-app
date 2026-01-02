@@ -32,3 +32,4 @@ devcontainer.json
 /tmp
 /data
 /docker
+.config/opencode
