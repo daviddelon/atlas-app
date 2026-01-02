@@ -24,7 +24,7 @@ class PhotoSeeder extends Seeder
 
 
 
-        DB::table('photos')->delete();
+       //DB::table('photos')->delete();
 
         $api_taxon = new RestClient([
             'base_url' => "https://api.inaturalist.org/v1/taxa",
