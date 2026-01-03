@@ -166,8 +166,8 @@ class PhotoSeeder extends Seeder
             }
 
             if (!empty($records)) {
-                DB::table('photos')->insert($records);
-                print "Inserted " . count($records) . " observation photos.\n";
+                DB::table('photos')->upsert($records, ['id']);
+                print "Upserted " . count($records) . " observation photos.\n";
             }
 
        }

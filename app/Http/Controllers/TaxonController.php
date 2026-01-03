@@ -109,6 +109,8 @@ class TaxonController extends Controller
 
         $communeCode = session('current_commune_code');
 
+        $zoomLevel = config('app.commune_zooms')[$communeCode] ?? 12;
+
         if (!$classes) {
             abort(404, "Groupe taxonomique inconnu");
         }
@@ -173,7 +175,7 @@ class TaxonController extends Controller
             ->paginate(10);
 
         $vue = $request->query('vue', 'default');
-        return view('atlas', compact('taxa', 'vue', 'categories'));
+        return view('atlas', compact('taxa', 'vue', 'categories', 'zoomLevel'));
     }
 
 

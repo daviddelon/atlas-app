@@ -64,11 +64,11 @@
             $observations = $taxon->observations->map(function ($observation) {
                 return [$observation->latitude, $observation->longitude, $observation->quality];
             });
-
         @endphp
         @push('js')
             <script type="module">
-                 <x-map :observations="$observations" :mapid="$taxon->id"></x-map>
+                var observations = {!! json_encode($observations) !!}
+                window['map{{ $taxon->id }}'] = map_index(observations, '{{ $taxon->id }}', '{{ session("current_commune_code") }}', {{ $zoomLevel }});
             </script>
         @endpush
     @endforeach

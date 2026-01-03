@@ -125,4 +125,12 @@ return [
 
     'available_commune_codes' => explode(',', env('AVAILABLE_COMMUNE_CODES', '34343')),
 
+    'commune_zooms' => collect(explode(',', env('COMMUNE_ZOOMS', '')))
+        ->mapWithKeys(function ($item) {
+            [$code, $zoom] = explode('=', trim($item));
+            return [$code => (float) $zoom];
+        })
+        ->toArray(),
+
+
 ];

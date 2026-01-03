@@ -51,7 +51,7 @@ class SeedTaxonObservations extends Command
         // Supprimer les observations existantes pour cette commune
         DB::table('observations')->where('code', $code)->delete();
 
-        $stream = fopen('/var/www/html/data/observations-583469.csv', 'r');
+        $stream = fopen('/var/www/html/data/observations-663859-Montpellier-34172.csv', 'r');
         $csv = Reader::createFromStream($stream);
         $csv->setHeaderOffset(0);
         $csv->setEscape('');
@@ -64,16 +64,16 @@ class SeedTaxonObservations extends Command
         $previous_taxon_id = null;
 
         $i = 0;
-        foreach ($all->chunkBy(10000) as $chunk) {
+        foreach ($all->chunkBy(1000) as $chunk) {
             print "$i\n";
-            $i = $i + 10000;
+            $i = $i + 1000;
 
             $observation_records = [];
             $observation_taxon_records = [];
             $taxon_records = [];
 
             foreach ($chunk as $record) {
-                if ($record['taxon_id'] != "" && $record['taxon_species_name'] != "" && $record['taxon_kingdom_name'] == 'Plantae') {
+                if ($record['taxon_id'] != ""  && $record['taxon_kingdom_name'] == 'Plantae') {
                     $pointWKT = "POINT({$record['longitude']} {$record['latitude']})";
 
                     $isInside = DB::selectOne("

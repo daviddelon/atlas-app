@@ -2,7 +2,7 @@ import './leaflet.snogylop.js';
 
 // Display a map with markers and return a map
 
-export function map_index(observations,mapid,communeCode) {
+export function map_index(observations,mapid,communeCode,zoomLevel) {
 
     var map = L.map("map"+mapid, {
         scrollWheelZoom: false,
@@ -29,8 +29,8 @@ export function map_index(observations,mapid,communeCode) {
                 },
                 invert: true
             }).addTo(map);
-            map.fitBounds(layer.getBounds(), { padding: [50, 50] });
-            map.setZoom(12.5);
+             map.fitBounds(layer.getBounds());
+             map.setZoom(zoomLevel || 12);
         });
 
 
