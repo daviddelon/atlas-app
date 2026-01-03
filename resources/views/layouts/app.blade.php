@@ -23,6 +23,17 @@
         <a class="navbar-brand" href="{{ url('/') }}">
           {{ config('app.name', 'Titre à renseigner dans .env') }}
         </a>
+
+        <form action="{{ url('/switch-commune') }}" method="POST" class="d-flex ms-3">
+          @csrf
+          <select name="code" class="form-select me-2" onchange="this.form.submit()">
+            @foreach(config('app.available_commune_codes') as $code)
+              <option value="{{ $code }}" {{ session('current_commune_code') == $code ? 'selected' : '' }}>
+                Commune {{ $code }}
+              </option>
+            @endforeach
+          </select>
+        </form>
       </div>
     </nav>
 

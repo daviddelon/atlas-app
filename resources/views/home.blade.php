@@ -3,5 +3,5 @@
 
 
 @section('content')
-    @include("tree.vivant")
+    @include("tree.plantes")
 @endsection

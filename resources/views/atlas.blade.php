@@ -5,8 +5,6 @@
 @section('content')
     <div class="container">
         <div class="row">
-            @include('tree.vivant')
-
             @php
                 $segments = explode('/', request()->path());
                 $category = $segments[1] ?? '';
@@ -14,7 +12,7 @@
 
             @switch($category)
                 @case('angiospermes')
-                    @include('tree.angiospermes')
+                    @include('tree.angiospermes', ['categories' => $categories])
                 @break
 
                 @default

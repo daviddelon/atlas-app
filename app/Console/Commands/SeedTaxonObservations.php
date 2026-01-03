@@ -51,7 +51,7 @@ class SeedTaxonObservations extends Command
         // Supprimer les observations existantes pour cette commune
         DB::table('observations')->where('code', $code)->delete();
 
-        $stream = fopen('/var/www/html/data/observations-658902.csv', 'r');
+        $stream = fopen('/var/www/html/data/observations-583469.csv', 'r');
         $csv = Reader::createFromStream($stream);
         $csv->setHeaderOffset(0);
         $csv->setEscape('');

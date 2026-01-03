@@ -123,4 +123,6 @@ return [
         'store' => env('APP_MAINTENANCE_STORE', 'database'),
     ],
 
+    'available_commune_codes' => explode(',', env('AVAILABLE_COMMUNE_CODES', '34343')),
+
 ];

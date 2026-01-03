@@ -1,5 +1,5 @@
 @php
-  $categories = [
+  $categories = $categories ?? [
     ['url' => '/plantes/angiospermes/orchidees', 'img' => '59339.jpg', 'label' => 'Orchidées'],
     ['url' => '/plantes/angiospermes/lamiacees', 'img' => '55459.jpg', 'label' => 'Lamiacées'],
     ['url' => '/plantes/angiospermes/asteracees', 'img' => '52588.jpg', 'label' => 'Asteracées'],
@@ -16,9 +16,9 @@
 
         <a href="{{ $cat['url'] }}" class="text-decoration-none" style="width: 120px;">
           <div class="rounded shadow-sm overflow-hidden position-relative border {{ $isActive ? 'border-success border-4' : 'border-0' }}" style="aspect-ratio: 1 / 1;">
-            <img src="{{ Storage::url($cat['img']) }}" class="w-100 h-100" style="object-fit: cover;" alt="{{ $cat['label'] }}">
+            <img src="{{ $cat['img'] }}" class="w-100 h-100" style="object-fit: cover;" alt="{{ $cat['label'] }}">
             <div class="position-absolute top-50 start-50 translate-middle text-white fw-bold small text-center bg-dark bg-opacity-50 w-100 py-1">
-              {{ $cat['label'] }}
+              {{ $cat['label'] }} ({{ $cat['count'] }})
             </div>
           </div>
         </a>

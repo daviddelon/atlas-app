@@ -3,6 +3,7 @@
 use App\Http\Controllers\ObservationController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\TaxonController;
+use App\Http\Controllers\CommuneController;
 use Illuminate\Support\Facades\Auth;
 
 
@@ -27,9 +28,12 @@ Route::get('/plantes', function () {
     return view('tree.plantes');
 });
 
+
+/*
 Route::get('/animaux', function () {
     return view('tree.animaux');
 });
+*/
 
 //Route::get('/plantes/{class}', [TaxonController::class, 'plantes'])
 //->where('class', '^(angiospermes|gymnospermes|fougeres|mousses)$');
@@ -44,3 +48,5 @@ Route::get('/animaux', function () {
 
 Route::get('/{kingdom}/{class}/{family?}', [TaxonController::class, 'taxaFiltre'])
     ->where('kingdom', 'plantes|animaux');
+
+Route::post('/switch-commune', [CommuneController::class, 'switch']);

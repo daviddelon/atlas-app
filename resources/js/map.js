@@ -2,7 +2,7 @@ import './leaflet.snogylop.js';
 
 // Display a map with markers and return a map
 
-export function map_index(observations,mapid) {
+export function map_index(observations,mapid,communeCode) {
 
     var map = L.map("map"+mapid, {
         scrollWheelZoom: false,
@@ -18,7 +18,7 @@ export function map_index(observations,mapid) {
     }).addTo(map);
 
      // Charger le GeoJSON Contour de Commune
-    fetch('/storage/34343.geojson')
+     fetch('/storage/' + communeCode + '.geojson')
         .then(response => response.json())
         .then(data => {
             var layer = L.geoJSON(data, {
