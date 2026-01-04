@@ -13,6 +13,11 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->web(\App\Http\Middleware\EnsureCommuneSelected::class);
     })
+
+    ->withMiddleware(function (Middleware $middleware): void {
+    $middleware->trustProxies(at: '*');
+    })
+
     ->withExceptions(function (Exceptions $exceptions) {
         //
     })->create();

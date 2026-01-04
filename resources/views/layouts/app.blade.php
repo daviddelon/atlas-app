@@ -1,3 +1,8 @@
+@php
+  $communeName = \App\Models\Commune::where('code', session('current_commune_code'))->value('nom') ?? 'Commune';
+  $communeLabels = \App\Models\Commune::whereIn('code', config('app.available_commune_codes'))->pluck('nom', 'code')->toArray();
+  $sortedCodes = collect(config('app.available_commune_codes'))->sortBy(fn($code) => $communeLabels[$code] ?? $code)->values()->all();
+@endphp
 <!doctype html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 <head>
@@ -5,7 +10,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="csrf-token" content="{{ csrf_token() }}">
 
-  <title>{{ config('app.name', 'Laravel') }}</title>
+  <title>{{ $communeName }}</title>
 
   <!-- Fonts -->
   <link rel="dns-prefetch" href="//fonts.bunny.net">
@@ -21,15 +26,15 @@
     <nav class="navbar navbar-expand-md navbar-light bg-white shadow-sm mb-3">
       <div class="container">
         <a class="navbar-brand" href="{{ url('/') }}">
-          {{ config('app.name', 'Titre à renseigner dans .env') }}
+          {{ $communeName }}
         </a>
 
         <form action="{{ url('/switch-commune') }}" method="POST" class="d-flex ms-3">
           @csrf
           <select name="code" class="form-select me-2" onchange="this.form.submit()">
-            @foreach(config('app.available_commune_codes') as $code)
+            @foreach($sortedCodes as $code)
               <option value="{{ $code }}" {{ session('current_commune_code') == $code ? 'selected' : '' }}>
-                Commune {{ $code }}
+                {{ $communeLabels[$code] ?? 'Commune ' . $code }}
               </option>
             @endforeach
           </select>
