@@ -230,37 +230,6 @@ class TaxonController extends Controller
         //
     }
 
-    public function getFamilyTaxa(Request $request, string $kingdom_slug, string $class_slug, string $family_slug)
-    {
-        $kingdom = self::KINGDOMS[$kingdom_slug] ?? null;
-        $classes = self::CLASSES[$class_slug] ?? null;
-        $family = self::FAMILIES[$family_slug] ?? Str::title(str_replace('-', ' ', $family_slug));
-
-        $taxa = Taxon::whereHas('observations', function (Builder $query) use ($classes, $kingdom, $family) {
-            $query->where('kingdom', $kingdom)
-                  ->whereIn('class', $classes)
-                  ->whereLike('family', '%'.$family.'%')
-                  ->where('code', session('current_commune_code'));
-        })
-        ->with(['observations' => function ($q) { $q->where('code', session('current_commune_code')); }, 'photo', 'description', 'like'])
-        ->withCount(['observations' => function ($q) { $q->where('code', session('current_commune_code')); }])
-        ->orderBy('observations_count', 'desc')
-        ->orderBy('id', 'asc')
-        ->paginate(10);
-
-        $taxaData = $taxa->items();
-        foreach ($taxaData as $taxon) {
-            $taxon->photo_url = $taxon->default_photo_url();
-            $taxon->formatted_description = $taxon->description ? $taxon->description->getFormattedContent() : '';
-        }
-
-        return response()->json([
-            'taxa' => $taxaData,
-            'pagination' => $taxa->links()->toHtml(),
-            'current_page' => $taxa->currentPage(),
-            'last_page' => $taxa->lastPage()
-        ]);
-    }
 
     /**
      * Remove the specified resource from storage.
