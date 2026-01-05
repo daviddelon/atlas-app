@@ -16,9 +16,7 @@ Route::get('/', function () {
     return view('home');
 });
 
-Route::get('/plantes/angiospermes', function () {
-    return redirect('/plantes/angiospermes/orchidees');
-});
+// Route supprimée - la redirection vers la famille la plus observée est gérée dans TaxonController
 
 
 // Route::get('/all', [ObservationController::class,  'index']);   DEBUG
@@ -45,6 +43,9 @@ Route::get('/animaux', function () {
 
 //Route::get('/{kingdom}', [TaxonController::class, 'kingdom'])
   //  ->where('kingdom', '^(Plantae|Animalia|Fungi)$');
+
+Route::get('/{kingdom}/{class}/family/{family}', [TaxonController::class, 'getFamilyTaxa'])
+    ->where('kingdom', 'plantes|animaux');
 
 Route::get('/{kingdom}/{class}/{family?}', [TaxonController::class, 'taxaFiltre'])
     ->where('kingdom', 'plantes|animaux');
