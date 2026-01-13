@@ -18,8 +18,16 @@
                 @default
             @endSwitch
 
-            <main class="col-md-12">
-                @foreach ($taxa as $taxon)
+             <main class="col-md-12">
+                 @if(isset($family) && $family)
+                     <div class="mb-4">
+                         <h2 class="text-center">
+                             Famille : {{ $family }}
+                         </h2>
+                     </div>
+                 @endif
+
+                 @foreach ($taxa as $taxon)
                     <div class="mb-4 border rounded-3 p-3 shadow-sm">
                         <div class="row align-items-start">
                             <!-- Colonne gauche : nom + photo -->

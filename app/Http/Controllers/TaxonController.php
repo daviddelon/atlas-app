@@ -181,7 +181,7 @@ class TaxonController extends Controller
             ->paginate(10);
 
         $vue = $request->query('vue', 'default');
-        return view('atlas', compact('taxa', 'vue', 'categories', 'zoomLevel'));
+        return view('atlas', compact('taxa', 'vue', 'categories', 'zoomLevel', 'family', 'family_slug', 'kingdom_slug', 'class_slug'));
     }
 
     /**
