@@ -9,19 +9,26 @@
 
 <div class="container-fluid bg-light py-3 mb-4">
   <div class="container">
-    <div id="familiesCarousel" class="carousel slide" style="height: 120px;">
+    <div id="familiesCarousel" class="carousel slide" style="height: 120px;" data-bs-interval="false">
       <div class="carousel-inner">
-        @foreach($categoriesChunks as $index => $chunk)
-          @php
-            $isChunkActive = false;
+        @php
+          $activeSlideIndex = -1;
+          foreach($categoriesChunks as $chunkIndex => $chunk) {
             foreach($chunk as $cat) {
-              if (request()->is($cat['url'])) {
-                $isChunkActive = true;
-                break;
+              if (request()->path() === trim($cat['url'], '/')) {
+                $activeSlideIndex = $chunkIndex;
+                break 2;
               }
             }
-          @endphp
-          <div class="carousel-item {{ $isChunkActive ? 'active' : ($index === 0 ? 'active' : '') }}">
+          }
+          // Si aucune slide ne correspond, utiliser la première
+          if ($activeSlideIndex === -1) {
+            $activeSlideIndex = 0;
+          }
+        @endphp
+
+        @foreach($categoriesChunks as $index => $chunk)
+          <div class="carousel-item {{ $index === $activeSlideIndex ? 'active' : '' }}">
             <div class="d-flex justify-content-center flex-wrap gap-3">
               @foreach($chunk as $cat)
                 @php

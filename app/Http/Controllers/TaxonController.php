@@ -184,11 +184,6 @@ class TaxonController extends Controller
         return view('atlas', compact('taxa', 'vue', 'categories', 'zoomLevel'));
     }
 
-
-
-
-
-
     /**
      * Show the form for creating a new resource.
      */

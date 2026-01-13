@@ -77,6 +77,10 @@
 
 
 
+
+
+
+
     <div>
         {{ $taxa->links() }}
     </div>
