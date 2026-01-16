@@ -12,7 +12,8 @@
 
             @switch($category)
                 @case('angiospermes')
-                    @include('tree.angiospermes', ['categories' => $categories])
+                @case('gymnospermes')
+                    @include('tree.familles', ['categories' => $categories])
                 @break
 
                 @default

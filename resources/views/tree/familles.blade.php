@@ -1,13 +1,18 @@
 @php
-  $categories = $categories ?? [
-    ['url' => '/plantes/angiospermes/orchidees', 'img' => '59339.jpg', 'label' => 'Orchidées'],
-    ['url' => '/plantes/angiospermes/lamiacees', 'img' => '55459.jpg', 'label' => 'Lamiacées'],
-    ['url' => '/plantes/angiospermes/asteracees', 'img' => '52588.jpg', 'label' => 'Asteracées'],
-  ];
+// Categories creee dynamiquement depuis le controller
   $categoriesChunks = collect($categories)->chunk(7);
 @endphp
 
 <div class="container-fluid bg-light py-3 mb-4">
+  <style>
+    .family-card {
+      transition: transform 0.3s ease;
+    }
+    .family-card-active {
+      transform: scale(1.1);
+      z-index: 10;
+    }
+  </style>
   <div class="container">
     <div id="familiesCarousel" class="carousel slide" style="height: 120px;" data-bs-interval="false">
       <div class="carousel-inner">
@@ -36,7 +41,7 @@
                 @endphp
 
                 <a href="{{ $cat['url'] }}" class="text-decoration-none" style="width: 120px;">
-                  <div class="rounded shadow-sm overflow-hidden position-relative border {{ $isActive ? 'border-success border-4' : 'border-0' }}" style="aspect-ratio: 1 / 1;">
+                  <div class="rounded overflow-hidden position-relative {{ $isActive ? 'border border-danger border-4 shadow-lg' : 'border-0 shadow-sm' }}" style="aspect-ratio: 1 / 1;">
                     <img src="{{ $cat['img'] }}" class="w-100 h-100" style="object-fit: cover;" alt="{{ $cat['label'] }}">
                     <div class="position-absolute top-50 start-50 translate-middle text-white fw-bold small text-center bg-dark bg-opacity-50 w-100 py-1">
                       {{ $cat['label'] }} ({{ $cat['count'] }})

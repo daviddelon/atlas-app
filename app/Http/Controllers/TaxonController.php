@@ -16,18 +16,14 @@ class TaxonController extends Controller
 {
 
 
+    // Exemple : /plantes/angiospermes/asteraceae
+    ///   kingdom/classes/families
+
     private const KINGDOMS = [
         'plantes' => 'Plantae',
         'animaux' => 'Animalia',
     ];
 
-
-//Magnoliopsida
-//Orchidaceae
-
-
-//Liliopsida
-//Lamiaceae
 
     public const CLASSES = [
 
@@ -66,21 +62,6 @@ class TaxonController extends Controller
     ];
 
 
-     public const FAMILIES = [
-
-
-        // plantes
-
-        'orchidees' =>  'Orchidaceae',
-        'lamiacees' =>  'Lamiaceae',
-        'asteracees' =>  'Asteraceae',
-
-
-
-
-    ];
-
-
 
     /**
      * Display a listing of the resource.
@@ -93,21 +74,26 @@ class TaxonController extends Controller
 
 
 
+
     public function taxaFiltre(Request $request, string $kingdom_slug, string $class_slug, ?string $family_slug="")
     {
 
 
 
+
+        // Traduction slug / kingdom/classe stockee dans taxa
+
         $kingdom = self::KINGDOMS[$kingdom_slug] ?? null;
         $classes = self::CLASSES[$class_slug] ?? null;
-        $family = self::FAMILIES[$family_slug] ?? null;
 
-        // If family not found in FAMILIES, assume family_slug is a slug of the family name
-        if (!$family && $family_slug) {
-            $family = Str::title(str_replace('-', ' ', $family_slug));
-        }
 
+        // Pas de traduction pour la famille
+        $family =  $family_slug;
+
+
+        // On n'affiche que les observations de la commune en cours
         $communeCode = session('current_commune_code');
+
 
         $zoomLevel = config('app.commune_zooms')[$communeCode] ?? 12;
 
@@ -116,7 +102,7 @@ class TaxonController extends Controller
         }
 
         $categories = [];
-        if ($class_slug === 'angiospermes') {
+
             $communeCode = session('current_commune_code');
             $topFamilies = DB::table('observations as o')
                 ->join('taxa as t', 'o.taxon_id', '=', 't.id')
@@ -124,16 +110,18 @@ class TaxonController extends Controller
                 ->whereIn('t.class', $classes)
                 ->where('t.kingdom', $kingdom)
                 ->whereNotNull('t.family')
+                ->where('t.scientific_name', 'like', '% %') // Nom d'espèce complet (contient un espace)
                 ->select('t.family', DB::raw('count(distinct o.taxon_id) as count'))
                 ->groupBy('t.family')
                 ->orderBy('count', 'desc')
                 ->get();
 
+
             // Si pas de family_slug spécifiée, rediriger vers la famille la plus observée
             if (!$family_slug && $topFamilies->isNotEmpty()) {
                 $topFamily = $topFamilies->first()->family;
-                $slug = array_search($topFamily, self::FAMILIES) ?: Str::slug($topFamily);
-                return redirect("/plantes/angiospermes/{$slug}");
+                $slug = Str::slug($topFamily);
+                return redirect("/plantes/$class_slug/{$slug}");
             }
 
             foreach ($topFamilies as $fam) {
@@ -153,9 +141,8 @@ class TaxonController extends Controller
 
                 $img = $mostObservedTaxon->default_photo_url();
 
-                // Find the slug key from FAMILIES if exists, else use slug of family
-                $slug = array_search($fam->family, self::FAMILIES) ?: Str::slug($fam->family);
-                $url = '/plantes/angiospermes/' . $slug;
+
+                $url = '/plantes/'.$class_slug.'/' . $fam->family;
 
                 $categories[] = [
                     'url' => $url,
@@ -163,10 +150,15 @@ class TaxonController extends Controller
                     'label' => $fam->family,
                     'count' => $fam->count,
                 ];
-            }
+
+
+
+
+
         }
 
-        $taxa = Taxon::whereHas('observations', function (Builder $query) use ($classes, $kingdom, $family) {
+        $taxa = Taxon::where('scientific_name', 'like', '% %') // Nom d'espèce complet (contient un espace)
+            ->whereHas('observations', function (Builder $query) use ($classes, $kingdom, $family) {
                 $query
                     ->where('kingdom', $kingdom)
                     ->whereIn('class', $classes)
