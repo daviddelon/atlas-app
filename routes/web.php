@@ -46,6 +46,6 @@ Route::get('/animaux', function () {
 
 Route::get('/{kingdom}/{class}/{family?}', [TaxonController::class, 'taxaFiltre'])
     ->where('kingdom', 'plantes|animaux')
-    ->where('class', 'angiospermes|gymnospermes|fougere|mousse');
+    ->where('class', 'angiospermes|gymnospermes|fougeres|mousses');
 
 Route::post('/switch-commune', [CommuneController::class, 'switch']);

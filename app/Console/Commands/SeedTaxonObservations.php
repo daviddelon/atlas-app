@@ -14,14 +14,14 @@ class SeedTaxonObservations extends Command
      *
      * @var string
      */
-    protected $signature = 'seed:taxon-observations {code : The commune code to seed observations for}';
+    protected $signature = 'seed:taxon-observations {code : The commune code to seed observations for} {file : The CSV file path to seed from}';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Seed taxon observations for a specific commune from CSV';
+    protected $description = 'Seed taxon observations for a specific commune from a specified CSV file';
 
     /**
      * Execute the console command.
@@ -29,20 +29,29 @@ class SeedTaxonObservations extends Command
     public function handle()
     {
         $code = $this->argument('code');
+        $file = $this->argument('file');
 
-        if (!$code) {
+        if (! $code) {
             $this->error('Code commune requis.');
+
             return 1;
         }
 
-        $this->info("Seeding pour la commune code: $code");
+        if (! $file || ! file_exists($file)) {
+            $this->error('Fichier CSV valide requis.');
+
+            return 1;
+        }
+
+        $this->info("Seeding pour la commune code: $code depuis $file");
 
         $communeGeom = DB::table('communes')
             ->where('code', $code)
             ->value('geom');
 
-        if (!$communeGeom) {
+        if (! $communeGeom) {
             $this->error("Commune $code introuvable.");
+
             return 1;
         }
 
@@ -51,12 +60,13 @@ class SeedTaxonObservations extends Command
         // Supprimer les observations existantes pour cette commune
         DB::table('observations')->where('code', $code)->delete();
 
-        $stream = fopen('/var/www/html/data/observations-663859-Montpellier-34172.csv', 'r');
+
+        $stream = fopen($file, 'r');
         $csv = Reader::createFromStream($stream);
         $csv->setHeaderOffset(0);
         $csv->setEscape('');
 
-        $stmt = new Statement();
+        $stmt = new Statement;
         $stmt = $stmt->orderByAsc('taxon_id');
 
         $all = $stmt->process($csv);
@@ -65,7 +75,7 @@ class SeedTaxonObservations extends Command
 
         $i = 0;
         foreach ($all->chunkBy(1000) as $chunk) {
-            print "$i\n";
+            echo "$i\n";
             $i = $i + 1000;
 
             $observation_records = [];
@@ -73,11 +83,11 @@ class SeedTaxonObservations extends Command
             $taxon_records = [];
 
             foreach ($chunk as $record) {
-                if ($record['taxon_id'] != ""  && $record['taxon_kingdom_name'] == 'Plantae') {
+                if ($record['taxon_id'] != '' && $record['taxon_kingdom_name'] == 'Plantae' && $record['geoprivacy'] <> 'obscured' && $record['captive_cultivated'] == 'false') {
                     $pointWKT = "POINT({$record['longitude']} {$record['latitude']})";
 
-                    $isInside = DB::selectOne("
-                        SELECT ST_Contains(?, ST_SRID(ST_PointFromText(?), 4326)) AS inside", [$communeGeom, $pointWKT]);
+                    $isInside = DB::selectOne('
+                        SELECT ST_Contains(?, ST_SRID(ST_PointFromText(?), 4326)) AS inside', [$communeGeom, $pointWKT]);
 
                     if ($isInside->inside) {
                         $observation_records[] = [
@@ -91,7 +101,7 @@ class SeedTaxonObservations extends Command
                             'quality' => ($record['quality_grade'] == 'research') ? 'R' : 'N',
                             'code' => $code,
                             'created_at' => now(),
-                            'updated_at' => now()
+                            'updated_at' => now(),
                         ];
                         $observation_taxon_records[] = [
                             'id' => $record['taxon_id'],
@@ -107,13 +117,13 @@ class SeedTaxonObservations extends Command
                             'family' => $record['taxon_family_name'],
                             'subfamily' => $record['taxon_subfamily_name'],
                             'created_at' => now(),
-                            'updated_at' => now()
+                            'updated_at' => now(),
                         ];
                     }
                 }
             }
 
-            if (!empty($observation_records)) {
+            if (! empty($observation_records)) {
                 foreach ($observation_records as $key => $observation) {
                     if ($previous_taxon_id != $observation['taxon_id']) {
                         $previous_taxon_id = $observation['taxon_id'];
@@ -132,22 +142,23 @@ class SeedTaxonObservations extends Command
                             'family' => $observation_taxon_records[$key]['family'],
                             'subfamily' => $observation_taxon_records[$key]['subfamily'],
                             'created_at' => now(),
-                            'updated_at' => now()
+                            'updated_at' => now(),
                         ];
                     }
                 }
             }
 
-            if (!empty($taxon_records)) {
+            if (! empty($taxon_records)) {
                 DB::table('taxa')->insertOrIgnore($taxon_records);
             }
 
-            if (!empty($observation_records)) {
+            if (! empty($observation_records)) {
                 DB::table('observations')->insert($observation_records);
             }
         }
 
         $this->info('Seeding completed.');
+
         return 0;
     }
 }

@@ -94,19 +94,27 @@ class TaxonController extends Controller
             ->orderBy('count', 'desc')
             ->get();
 
-        $families = $topFamilies->pluck('family');
-        $mostObservedTaxa = Taxon::whereIn('family', $families)
-            ->whereHas('photo')
-            ->with('photo')
-            ->withCount(['observations' => function ($q) use ($communeCode) {
-                $q->where('code', $communeCode);
-            }])
-            ->having('observations_count', '>', 0)
-            ->get()
-            ->groupBy('family')
-            ->map(function ($group) {
-                return $group->sortByDesc('observations_count')->first();
-            });
+        $families = $topFamilies->pluck('family')->toArray();
+        $rankedQuery = '
+            WITH ranked_taxa AS (
+                SELECT t.*,
+                       COUNT(o.id) AS observations_count,
+                       ROW_NUMBER() OVER (PARTITION BY t.family ORDER BY COUNT(o.id) DESC, t.id ASC) AS rn
+                FROM taxa t
+                JOIN observations o ON t.id = o.taxon_id
+                WHERE t.family IN ('.str_repeat('?,', count($families) - 1).'?)
+                  AND o.code = ?
+                  AND EXISTS (SELECT 1 FROM photos p WHERE p.taxon_id = t.id)
+                GROUP BY t.id
+                HAVING COUNT(o.id) > 0
+            )
+            SELECT * FROM ranked_taxa WHERE rn = 1
+        ';
+        $mostObservedTaxa = DB::select($rankedQuery, array_merge($families, [$communeCode]));
+        $mostObservedTaxa = collect($mostObservedTaxa)->keyBy('family');
+
+        $taxonIds = $mostObservedTaxa->pluck('id');
+        $taxaWithPhotos = Taxon::whereIn('id', $taxonIds)->with('photo')->get()->keyBy('id');
 
         // Si pas de family_slug spécifiée, rediriger vers la famille la plus observée
         if (! $family_slug && $topFamilies->isNotEmpty()) {
@@ -119,11 +127,11 @@ class TaxonController extends Controller
         foreach ($topFamilies as $fam) {
             $mostObservedTaxon = $mostObservedTaxa->get($fam->family);
 
-            if (! $mostObservedTaxon || ! $mostObservedTaxon->photo) {
+            if (! $mostObservedTaxon || ! $taxaWithPhotos->get($mostObservedTaxon->id)?->photo) {
                 continue; // Skip families without a photo for the most observed taxon
             }
 
-            $img = $mostObservedTaxon->default_photo_url();
+            $img = $taxaWithPhotos->get($mostObservedTaxon->id)->default_photo_url();
 
             $url = '/plantes/'.$class_slug.'/'.$fam->family;
 

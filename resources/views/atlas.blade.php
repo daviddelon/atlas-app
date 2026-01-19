@@ -13,6 +13,8 @@
             @switch($category)
                 @case('angiospermes')
                 @case('gymnospermes')
+                @case('fougeres')
+                @case('mousses')
                     @include('tree.familles', ['categories' => $categories])
                 @break
 
@@ -51,7 +53,7 @@
                                     <livewire:like :taxon="$taxon" />
                                 @endif
                                 <div>
-                                    {!! $taxon->description->getFormattedContent() ?? '' !!}
+                                    {!! $taxon->description?->getFormattedContent() ?? '' !!}
                                 </div>
                             </div>
 
