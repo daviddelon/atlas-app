@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\Auth;
 
 
 Route::get('/', function () {
-    return view('home');
+    return view('welcome');
 });
 
 // Route supprimée - la redirection vers la famille la plus observée est gérée dans TaxonController
