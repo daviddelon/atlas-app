@@ -8,7 +8,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
     <style>
         body { background-color: #fafaf0; }
-        .hero-bg { background-image: url('https://via.placeholder.com/1440x420?text=Paysage+local'); background-size: cover; background-position: center; position: relative; }
+        .hero-bg { background-image: url('https://placehold.co/1440x420'); background-size: cover; background-position: center; position: relative; }
         .hero-overlay { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background-color: rgba(0,0,0,0.35); }
         .hero-content { position: relative; z-index: 2; }
         .stats-bg { background-color: #e8f5e8; }
@@ -17,7 +17,7 @@
         .focus-bg { background-color: #f0f8f0; }
         .methodologie-bg { background-color: #fafaf0; }
         .contribution-bg { background-color: #fff; }
-        .random-bg { background-image: url('https://via.placeholder.com/1200x200?text=Flou+léger'); background-size: cover; }
+        .random-bg { background-image: url('https://placehold.co/1200x200'); background-size: cover; }
         .footer-bg { background-color: #2d5016; color: white; }
         .btn-saison { width: 96px; height: 96px; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: all 0.3s; }
         .btn-saison:hover { background-color: #28a745; color: white; }
@@ -73,19 +73,19 @@
             <h2 class="text-center mb-5">Explorer l'atlas</h2>
             <!-- Grands groupes -->
             <div class="row g-4 mb-5">
-                <div class="col-md-6"><a href="/plantes/angiospermes" class="text-decoration-none"><div class="card card-hover"><img src="/storage/202282.jpg" class="card-img-top" style="height: 400px; object-fit: cover;" alt=""><div class="card-img-overlay d-flex align-items-center justify-content-center"><h5 class="card-title text-white bg-dark bg-opacity-50 p-2 rounded">Plantes à fleurs</h5></div></div></a></div>
-                <div class="col-md-6"><a href="/plantes/gymnospermes" class="text-decoration-none"><div class="card card-hover"><img src="/storage/82722.jpg" class="card-img-top" style="height: 400px; object-fit: cover;" alt=""><div class="card-img-overlay d-flex align-items-center justify-content-center"><h5 class="card-title text-white bg-dark bg-opacity-50 p-2 rounded">Conifères</h5></div></div></a></div>
-                <div class="col-md-6"><a href="/plantes/fougeres" class="text-decoration-none"><div class="card card-hover"><img src="/storage/346413.jpg" class="card-img-top" style="height: 400px; object-fit: cover;" alt=""><div class="card-img-overlay d-flex align-items-center justify-content-center"><h5 class="card-title text-white bg-dark bg-opacity-50 p-2 rounded">Fougères</h5></div></div></a></div>
-                <div class="col-md-6"><a href="/plantes/mousses" class="text-decoration-none"><div class="card card-hover"><img src="/storage/1180933.jpg" class="card-img-top" style="height: 400px; object-fit: cover;" alt=""><div class="card-img-overlay d-flex align-items-center justify-content-center"><h5 class="card-title text-white bg-dark bg-opacity-50 p-2 rounded">Mousses et hépatiques</h5></div></div></a></div>
+                <div class="col-md-6"><a href="/plantes/angiospermes" class="text-decoration-none"><div class="card card-hover"><img src="/storage/202282.jpg" class="card-img-top" style="height: 200px; object-fit: cover;" alt=""><div class="card-img-overlay d-flex align-items-center justify-content-center"><h5 class="card-title text-white bg-dark bg-opacity-50 p-2 rounded">Plantes à fleurs</h5></div></div></a></div>
+                <div class="col-md-6"><a href="/plantes/gymnospermes" class="text-decoration-none"><div class="card card-hover"><img src="/storage/82722.jpg" class="card-img-top" style="height: 200px; object-fit: cover;" alt=""><div class="card-img-overlay d-flex align-items-center justify-content-center"><h5 class="card-title text-white bg-dark bg-opacity-50 p-2 rounded">Conifères</h5></div></div></a></div>
+                <div class="col-md-6"><a href="/plantes/fougeres" class="text-decoration-none"><div class="card card-hover"><img src="/storage/346413.jpg" class="card-img-top" style="height: 200px; object-fit: cover;" alt=""><div class="card-img-overlay d-flex align-items-center justify-content-center"><h5 class="card-title text-white bg-dark bg-opacity-50 p-2 rounded">Fougères</h5></div></div></a></div>
+                <div class="col-md-6"><a href="/plantes/mousses" class="text-decoration-none"><div class="card card-hover"><img src="/storage/1180933.jpg" class="card-img-top" style="height: 200px; object-fit: cover;" alt=""><div class="card-img-overlay d-flex align-items-center justify-content-center"><h5 class="card-title text-white bg-dark bg-opacity-50 p-2 rounded">Mousses et hépatiques</h5></div></div></a></div>
             </div>
             <!-- Milieux naturels -->
             <div class="row g-3">
-                <div class="col-md-4"><div class="card"><img src="https://via.placeholder.com/300x200" class="card-img-top" alt=""><div class="card-body"><i class="bi bi-tree"></i><p class="card-text">Forêt</p></div></div></div>
-                <div class="col-md-4"><div class="card"><img src="https://via.placeholder.com/300x200" class="card-img-top" alt=""><div class="card-body"><i class="bi bi-sun"></i><p class="card-text">Prairie</p></div></div></div>
-                <div class="col-md-4"><div class="card"><img src="https://via.placeholder.com/300x200" class="card-img-top" alt=""><div class="card-body"><i class="bi bi-water"></i><p class="card-text">Rivière</p></div></div></div>
-                <div class="col-md-4"><div class="card"><img src="https://via.placeholder.com/300x200" class="card-img-top" alt=""><div class="card-body"><i class="bi bi-mountain"></i><p class="card-text">Montagne</p></div></div></div>
-                <div class="col-md-4"><div class="card"><img src="https://via.placeholder.com/300x200" class="card-img-top" alt=""><div class="card-body"><i class="bi bi-house"></i><p class="card-text">Urbain</p></div></div></div>
-                <div class="col-md-4"><div class="card"><img src="https://via.placeholder.com/300x200" class="card-img-top" alt=""><div class="card-body"><i class="bi bi-flower1"></i><p class="card-text">Jardin</p></div></div></div>
+                <div class="col-md-4"><div class="card"><img src="https://placehold.co/300x200" class="card-img-top" alt=""><div class="card-body"><i class="bi bi-tree"></i><p class="card-text">Forêt</p></div></div></div>
+                <div class="col-md-4"><div class="card"><img src="https://placehold.co/300x200" class="card-img-top" alt=""><div class="card-body"><i class="bi bi-sun"></i><p class="card-text">Prairie</p></div></div></div>
+                <div class="col-md-4"><div class="card"><img src="https://placehold.co/300x200" class="card-img-top" alt=""><div class="card-body"><i class="bi bi-water"></i><p class="card-text">Rivière</p></div></div></div>
+                <div class="col-md-4"><div class="card"><img src="https://placehold.co/300x200" class="card-img-top" alt=""><div class="card-body"><i class="bi bi-mountain"></i><p class="card-text">Montagne</p></div></div></div>
+                <div class="col-md-4"><div class="card"><img src="https://placehold.co/300x200" class="card-img-top" alt=""><div class="card-body"><i class="bi bi-house"></i><p class="card-text">Urbain</p></div></div></div>
+                <div class="col-md-4"><div class="card"><img src="https://placehold.co/300x200" class="card-img-top" alt=""><div class="card-body"><i class="bi bi-flower1"></i><p class="card-text">Jardin</p></div></div></div>
             </div>
         </div>
     </section>
@@ -107,8 +107,8 @@
     <section class="focus-bg py-5">
         <div class="container" style="max-width: 1200px;">
             <div class="row">
-                <div class="col-md-6"><div class="card"><img src="https://via.placeholder.com/500x300" class="card-img-top" alt=""><div class="card-body"><h5>Espèces remarquables</h5><p>Texte court.</p><button class="btn btn-secondary">Voir</button></div></div></div>
-                <div class="col-md-6"><div class="card"><img src="https://via.placeholder.com/500x300" class="card-img-top" alt=""><div class="card-body"><h5>Carte floristique</h5><p>Mini carte.</p><button class="btn btn-primary">Explorer</button></div></div></div>
+                <div class="col-md-6"><div class="card"><img src="https://placehold.co/500x300" class="card-img-top" alt=""><div class="card-body"><h5>Espèces remarquables</h5><p>Texte court.</p><button class="btn btn-secondary">Voir</button></div></div></div>
+                <div class="col-md-6"><div class="card"><img src="https://placehold.co/500x300" class="card-img-top" alt=""><div class="card-body"><h5>Carte floristique</h5><p>Mini carte.</p><button class="btn btn-primary">Explorer</button></div></div></div>
             </div>
         </div>
     </section>

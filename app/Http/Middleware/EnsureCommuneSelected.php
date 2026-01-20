@@ -31,7 +31,7 @@ class EnsureCommuneSelected
 
             // Si aucune commune n'a de données, prendre la première disponible
             if (!$selectedCode) {
-                $selectedCode = $availableCodes[0] ?? '34343';
+                $selectedCode = $availableCodes[0] ?? config('app.default_commune_code');
             }
 
             session(['current_commune_code' => $selectedCode]);

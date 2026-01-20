@@ -73,6 +73,11 @@ class TaxonController extends Controller
         // On n'affiche que les observations de la commune en cours
         $communeCode = session('current_commune_code');
 
+        if (!$communeCode) {
+            $communeCode = config('app.default_commune_code'); // Commune par défaut
+            session(['current_commune_code' => $communeCode]);
+        }
+
         $zoomLevel = config('app.commune_zooms')[$communeCode] ?? 12;
 
         if (! $classes) {
@@ -133,7 +138,7 @@ class TaxonController extends Controller
 
             $img = $taxaWithPhotos->get($mostObservedTaxon->id)->default_photo_url();
 
-            $url = '/plantes/'.$class_slug.'/'.$fam->family;
+            $url = '/plantes/'.$class_slug.'/'.Str::slug($fam->family);
 
             $categories[] = [
                 'url' => $url,
@@ -149,7 +154,7 @@ class TaxonController extends Controller
                 $query
                     ->where('kingdom', $kingdom)
                     ->whereIn('class', $classes)
-                    ->whereLike('family', '%'.$family.'%')
+                    ->whereRaw('LOWER(family) LIKE LOWER(?)', ['%'.$family.'%'])
                     ->where('code', session('current_commune_code'));
 
             })

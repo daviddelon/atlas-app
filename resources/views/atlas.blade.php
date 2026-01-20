@@ -25,7 +25,7 @@
                  @if(isset($family) && $family)
                      <div class="mb-4">
                          <h2 class="text-center">
-                             Famille : {{ $family }}
+                             Famille : {{ ucfirst($family) }}
                          </h2>
                      </div>
                  @endif
