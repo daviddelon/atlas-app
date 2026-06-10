@@ -33,4 +33,6 @@ devcontainer.json
 /data
 /docker
 .config/opencode
+.local/share/opencode
+.local/state/opencode
 TODO.md

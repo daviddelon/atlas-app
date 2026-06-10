@@ -7,21 +7,21 @@ use Illuminate\Support\Facades\Storage;
 use GuzzleHttp\Client;
 use RestClient;
 
-class FindMissingPhotos extends Command
+class SeedMissingPhotos extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'find:missing-photos';
+    protected $signature = 'seed:missing-photos';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Create photos table records for image files in storage that lack DB entries, using iNaturalist API';
+    protected $description = 'Seed photos table records for image files in storage that lack DB entries, using iNaturalist API';
 
     /**
      * Execute the console command.

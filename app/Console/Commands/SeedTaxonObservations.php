@@ -83,7 +83,8 @@ class SeedTaxonObservations extends Command
             $taxon_records = [];
 
             foreach ($chunk as $record) {
-                if ($record['taxon_id'] != '' && $record['taxon_kingdom_name'] == 'Plantae' && $record['geoprivacy'] <> 'obscured' && $record['captive_cultivated'] == 'false') {
+                //if ($record['taxon_id'] != '' && $record['taxon_kingdom_name'] == 'Plantae' && $record['geoprivacy'] <> 'obscured' && $record['captive_cultivated'] == 'false') {
+                if ($record['taxon_id'] != '' && $record['taxon_kingdom_name'] == 'Plantae' && $record['geoprivacy'] <> 'obscured' ) {
                     $pointWKT = "POINT({$record['longitude']} {$record['latitude']})";
 
                     $isInside = DB::selectOne('

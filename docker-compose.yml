@@ -20,6 +20,8 @@ services:
         volumes:
             - '.:/var/www/html'
             - './.config/opencode:/home/sail/.config/opencode:rw'
+            - './.local/share/opencode:/home/sail/.local/share/opencode:rw'
+            - './.local/state/opencode:/home/sail/.local/state/opencode:rw'
         networks:
             - sail
         depends_on:

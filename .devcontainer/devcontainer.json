@@ -9,16 +9,6 @@
 	"customizations": {
 		"vscode": {
 			"extensions": [
-				"onecentlin.laravel-extension-pack",
-				"Porifa.laravel-intelephense",
-				"bmewburn.vscode-intelephense-client",
-				"HTMLHint.vscode-htmlhint",
-				"Scotthew.go-nav-bar",
-				"saoudrizwan.claude-dev",
-				"EdwinKofler.vscode-hyperupcall-pack-markdown",
-				"mtxr.sqltools",
-				"mtxr.sqltools-driver-mysql",
-				"sst-dev.opencode"
 			],
 			"settings": {}
 		}

@@ -7,9 +7,9 @@ use App\Http\Controllers\CommuneController;
 use Illuminate\Support\Facades\Auth;
 
 
-// Auth::loginUsingId(1); // hack
+//Auth::loginUsingId(1); // hack
 
-//Auth::logout();
+Auth::logout();
 
 
 Route::get('/', function () {
