@@ -6,11 +6,12 @@
             <main class="col-md-12">
 
                 @php
+                    $locationSlug = config('app.default_commune_location');
                     $categories = [
-                        ['url' => '/plantes/angiospermes', 'img' => '202282.jpg', 'label' => 'Plantes à fleurs'],
-                        ['url' => '/plantes/gymnospermes', 'img' => '82722.jpg', 'label' => 'Conifères'],
-                        ['url' => '/plantes/fougeres', 'img' => '346413.jpg', 'label' => 'Fougères'],
-                        ['url' => '/plantes/mousses', 'img' => '1180933.jpg', 'label' => 'Mousses et hépatiques'],
+                        ['url' => "/$locationSlug/plantes/angiospermes", 'img' => '202282.jpg', 'label' => 'Plantes à fleurs'],
+                        ['url' => "/$locationSlug/plantes/gymnospermes", 'img' => '82722.jpg', 'label' => 'Conifères'],
+                        ['url' => "/$locationSlug/plantes/fougeres", 'img' => '346413.jpg', 'label' => 'Fougères'],
+                        ['url' => "/$locationSlug/plantes/mousses", 'img' => '1180933.jpg', 'label' => 'Mousses et hépatiques'],
                     ];
                 @endphp
 

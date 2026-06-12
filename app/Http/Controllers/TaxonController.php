@@ -6,13 +6,11 @@ use App\Models\Taxon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
 class TaxonController extends Controller
 {
-    // Exemple : /plantes/angiospermes/asteraceae
-    // /   kingdom/classes/families
+    // Exemple : /ferrieres-les-verreries-34099/plantes/angiospermes/asteraceae
 
     private const KINGDOMS = [
         'plantes' => 'Plantae',
@@ -59,24 +57,15 @@ class TaxonController extends Controller
      */
     public function index(Request $request) {}
 
-    public function taxaFiltre(Request $request, string $kingdom_slug, string $class_slug, ?string $family_slug = '')
+    public function taxaFiltre(Request $request, string $location_slug, string $kingdom_slug, string $class_slug, ?string $family_slug = '')
     {
-
-        // Traduction slug / kingdom/classe stockee dans taxa
 
         $kingdom = self::KINGDOMS[$kingdom_slug] ?? null;
         $classes = self::CLASSES[$class_slug] ?? null;
 
-        // Pas de traduction pour la famille
         $family = $family_slug;
 
-        // On n'affiche que les observations de la commune en cours
-        $communeCode = session('current_commune_code');
-
-        if (!$communeCode) {
-            $communeCode = config('app.default_commune_code'); // Commune par défaut
-            session(['current_commune_code' => $communeCode]);
-        }
+        $communeCode = config('app.default_commune_code');
 
         $zoomLevel = config('app.commune_zooms')[$communeCode] ?? 12;
 
@@ -86,14 +75,13 @@ class TaxonController extends Controller
 
         $categories = [];
 
-        $communeCode = session('current_commune_code');
         $topFamilies = DB::table('observations as o')
             ->join('taxa as t', 'o.taxon_id', '=', 't.id')
-            ->where('o.code', session('current_commune_code'))
+            ->where('o.code', $communeCode)
             ->whereIn('t.class', $classes)
             ->where('t.kingdom', $kingdom)
             ->whereNotNull('t.family')
-            ->where('t.scientific_name', 'like', '% %') // Nom d'espèce complet (contient un espace)
+            ->where('t.scientific_name', 'like', '% %')
             ->select('t.family', DB::raw('count(distinct o.taxon_id) as count'))
             ->groupBy('t.family')
             ->orderBy('count', 'desc')
@@ -126,19 +114,19 @@ class TaxonController extends Controller
             $topFamily = $topFamilies->first()->family;
             $slug = Str::slug($topFamily);
 
-            return redirect("/plantes/$class_slug/{$slug}");
+            return redirect("/$location_slug/plantes/$class_slug/{$slug}");
         }
 
         foreach ($topFamilies as $fam) {
             $mostObservedTaxon = $mostObservedTaxa->get($fam->family);
 
             if (! $mostObservedTaxon || ! $taxaWithPhotos->get($mostObservedTaxon->id)?->photo) {
-                continue; // Skip families without a photo for the most observed taxon
+                continue;
             }
 
             $img = $taxaWithPhotos->get($mostObservedTaxon->id)->default_photo_url();
 
-            $url = '/plantes/'.$class_slug.'/'.Str::slug($fam->family);
+            $url = '/'.$location_slug.'/plantes/'.$class_slug.'/'.Str::slug($fam->family);
 
             $categories[] = [
                 'url' => $url,
@@ -149,26 +137,29 @@ class TaxonController extends Controller
 
         }
 
-        $taxa = Taxon::where('scientific_name', 'like', '% %') // Nom d'espèce complet (contient un espace)
-            ->whereHas('observations', function (Builder $query) use ($classes, $kingdom, $family) {
+        $taxa = Taxon::where('scientific_name', 'like', '% %')
+            ->whereHas('observations', function (Builder $query) use ($classes, $kingdom, $family, $communeCode) {
                 $query
                     ->where('kingdom', $kingdom)
                     ->whereIn('class', $classes)
                     ->whereRaw('LOWER(family) LIKE LOWER(?)', ['%'.$family.'%'])
-                    ->where('code', session('current_commune_code'));
+                    ->where('code', $communeCode);
 
             })
-            ->with(['observations' => function ($q) {
-                $q->where('code', session('current_commune_code'));
+            ->with(['observations' => function ($q) use ($communeCode) {
+                $q->where('code', $communeCode);
             }, 'photo', 'description', 'like'])
-            ->withCount(['observations' => function ($q) {
-                $q->where('code', session('current_commune_code'));
+            ->withCount(['observations' => function ($q) use ($communeCode) {
+                $q->where('code', $communeCode);
             }])
             ->orderBy('observations_count', 'desc')
             ->orderBy('id', 'asc')
             ->paginate(10);
 
-        return view('atlas', compact('taxa', 'categories', 'zoomLevel', 'family', 'family_slug', 'kingdom_slug', 'class_slug'));
+        return view('atlas', compact(
+            'taxa', 'categories', 'zoomLevel', 'family', 'family_slug',
+            'kingdom_slug', 'class_slug', 'location_slug', 'communeCode'
+        ));
     }
 
     /**

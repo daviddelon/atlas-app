@@ -1,4 +1,4 @@
-@props(['observations', 'mapid', 'zoomLevel'])
+@props(['observations', 'mapid', 'zoomLevel', 'communeCode'])
 
 var observations = {!! json_encode($observations) !!}
-var {{ 'map'.$mapid }}=map_index(observations,'{{ $mapid }}', '{{ session("current_commune_code") }}', {{ $zoomLevel ?? 12 }});
+var {{ 'map'.$mapid }}=map_index(observations,'{{ $mapid }}', '{{ $communeCode }}', {{ $zoomLevel ?? 12 }});

@@ -43,7 +43,7 @@ class SeedMissingPhotos extends Command
 
         $existingTaxonIds = \App\Models\Photo::whereIn('taxon_id', $taxonIdsFromFiles)->pluck('taxon_id')->toArray();
 
-        $missingTaxonIds = array_diff($taxonIdsFromFiles, $existingTaxonIds);
+        $missingTaxonIds = array_diff(array_unique($taxonIdsFromFiles), $existingTaxonIds);
 
         $this->info('Found ' . count($missingTaxonIds) . ' photo files without DB records.');
 
@@ -82,7 +82,6 @@ class SeedMissingPhotos extends Command
 
                         if ($selectedPhoto) {
                             $newRecords[] = [
-                                'id' => $selectedPhoto->photo->id,
                                 'taxon_id' => $taxonId,
                                 'author' => $selectedPhoto->photo->attribution_name ?? '',
                                 'license' => $selectedPhoto->photo->license_code ?? '',
@@ -114,7 +113,6 @@ class SeedMissingPhotos extends Command
                             $observationPhoto = $data->results[0]->observation_photos[0];
 
                             $newRecords[] = [
-                                'id' => $observationPhoto->photo->id,
                                 'taxon_id' => $taxonId,
                                 'author' => $observationPhoto->photo->attribution ?? '',
                                 'license' => $observationPhoto->photo->license_code ?? '',

@@ -3,7 +3,6 @@
 use App\Http\Controllers\ObservationController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\TaxonController;
-use App\Http\Controllers\CommuneController;
 use Illuminate\Support\Facades\Auth;
 
 
@@ -13,7 +12,8 @@ Auth::logout();
 
 
 Route::get('/', function () {
-    return view('welcome');
+    $location = config('app.default_commune_location');
+    return redirect("/$location");
 });
 
 // Route supprimée - la redirection vers la famille la plus observée est gérée dans TaxonController
@@ -23,7 +23,8 @@ Route::get('/', function () {
 
 
 Route::get('/plantes', function () {
-    return view('tree.plantes');
+    $location = config('app.default_commune_location');
+    return redirect("/$location/plantes/angiospermes");
 });
 
 
@@ -44,8 +45,13 @@ Route::get('/animaux', function () {
 //Route::get('/{kingdom}', [TaxonController::class, 'kingdom'])
   //  ->where('kingdom', '^(Plantae|Animalia|Fungi)$');
 
-Route::get('/{kingdom}/{class}/{family?}', [TaxonController::class, 'taxaFiltre'])
+Route::get('/{location}', function (string $location) {
+    $communeCode = config('app.default_commune_code');
+    $communeName = \App\Models\Commune::where('code', $communeCode)->value('nom') ?? 'Atlas';
+    return view('welcome', compact('communeName', 'location'));
+})->where('location', config('app.default_commune_location'));
+
+Route::get('/{location}/{kingdom}/{class}/{family?}', [TaxonController::class, 'taxaFiltre'])
+    ->where('location', config('app.default_commune_location'))
     ->where('kingdom', 'plantes|animaux')
     ->where('class', 'angiospermes|gymnospermes|fougeres|mousses');
-
-Route::post('/switch-commune', [CommuneController::class, 'switch']);

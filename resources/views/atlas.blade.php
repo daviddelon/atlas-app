@@ -7,7 +7,7 @@
         <div class="row">
             @php
                 $segments = explode('/', request()->path());
-                $category = $segments[1] ?? '';
+                $category = $segments[2] ?? ($segments[1] ?? '');
             @endphp
 
             @switch($category)
@@ -79,7 +79,7 @@
         @push('js')
             <script type="module">
                 var observations = {!! json_encode($observations) !!}
-                window['map{{ $taxon->id }}'] = map_index(observations, '{{ $taxon->id }}', '{{ session("current_commune_code") }}', {{ $zoomLevel }});
+                window['map{{ $taxon->id }}'] = map_index(observations, '{{ $taxon->id }}', '{{ $communeCode }}', {{ $zoomLevel }});
             </script>
         @endpush
     @endforeach

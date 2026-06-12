@@ -125,6 +125,7 @@ return [
 
     'available_commune_codes' => explode(',', env('AVAILABLE_COMMUNE_CODES', '34343')),
     'default_commune_code' => env('DEFAULT_COMMUNE_CODE', '34343'),
+    'default_commune_location' => env('DEFAULT_COMMUNE_LOCATION', 'ferrieres-les-verreries-34099'),
 
     'commune_zooms' => collect(explode(',', env('COMMUNE_ZOOMS', '')))
         ->mapWithKeys(function ($item) {

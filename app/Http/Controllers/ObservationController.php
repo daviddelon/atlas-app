@@ -12,7 +12,7 @@ class ObservationController extends Controller
      */
     public function index()
     {
-        $observations=Observation::where('code', session('current_commune_code'))->get();
+        $observations=Observation::where('code', config('app.default_commune_code'))->get();
 
 
         return view('tree.all', [
