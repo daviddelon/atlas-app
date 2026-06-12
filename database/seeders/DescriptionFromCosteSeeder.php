@@ -9,11 +9,10 @@
  *
  * Fonctionnement :
  * - Récupération des taxons par chunks de 50 pour optimisation
- * - Mise à jour upsert dans la table descriptions pour les taxons en correspondance sur le nom scientifique
+ * - Insertion dans la table descriptions pour les taxons en correspondance sur le nom scientifique
  *
  * Dépendances :
  * - Base bdtfx
- * - Service Openrouter pour l'IA
  * - Modèles Taxon et Description
  *
  *
