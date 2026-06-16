@@ -32,11 +32,11 @@ return new class extends Migration
             $table->spatialIndex(['geom'], 'idx_communes_geom');
         });
 
-        // Post-processing for SRID
+        // Post-processing for SRID (drop/recreate column to avoid MySQL-only MODIFY SRID syntax)
         DB::statement('DROP INDEX geom ON communes');
         DB::statement('DROP INDEX idx_communes_geom ON communes');
-        DB::statement('ALTER TABLE communes MODIFY geom GEOMETRY NOT NULL SRID 4326');
-        DB::statement('UPDATE communes SET geom = ST_SRID(geom, 4326) WHERE ST_SRID(geom) != 4326');
+        DB::statement('ALTER TABLE communes DROP COLUMN geom');
+        DB::statement('ALTER TABLE communes ADD COLUMN geom GEOMETRY NOT NULL SRID 4326');
         DB::statement('CREATE SPATIAL INDEX geom ON communes (geom)');
         DB::statement('CREATE SPATIAL INDEX idx_communes_geom ON communes (geom)');
 
