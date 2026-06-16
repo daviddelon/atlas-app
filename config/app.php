@@ -127,6 +127,7 @@ return [
     'default_commune_location' => env('DEFAULT_COMMUNE_LOCATION', 'ferrieres-les-verreries-34099'),
 
     'commune_zooms' => collect(explode(',', env('COMMUNE_ZOOMS', '')))
+        ->filter()
         ->mapWithKeys(function ($item) {
             [$code, $zoom] = explode('=', trim($item));
             return [$code => (float) $zoom];
