@@ -16,7 +16,7 @@ return new class extends Migration
         Schema::create('communes', function (Blueprint $table) {
             $table->engine = 'InnoDB';
             $table->charset = 'utf8mb4';
-            $table->collation = 'utf8mb4_0900_ai_ci';
+            $table->collation = 'utf8mb4_unicode_ci';
 
             $table->id('OGR_FID');
             $table->geometry('geom');
@@ -32,11 +32,11 @@ return new class extends Migration
             $table->spatialIndex(['geom'], 'idx_communes_geom');
         });
 
-        // Post-processing for SRID (drop/recreate column to avoid MySQL-only MODIFY SRID syntax)
+        // Post-processing: drop/recreate column as NOT NULL
         DB::statement('DROP INDEX geom ON communes');
         DB::statement('DROP INDEX idx_communes_geom ON communes');
         DB::statement('ALTER TABLE communes DROP COLUMN geom');
-        DB::statement('ALTER TABLE communes ADD COLUMN geom GEOMETRY NOT NULL SRID 4326');
+        DB::statement('ALTER TABLE communes ADD COLUMN geom GEOMETRY NOT NULL');
         DB::statement('CREATE SPATIAL INDEX geom ON communes (geom)');
         DB::statement('CREATE SPATIAL INDEX idx_communes_geom ON communes (geom)');
 
