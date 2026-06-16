@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('observations', function (Blueprint $table) {
-            $table->string('code', 10)->nullable()->collation('utf8mb4_0900_ai_ci');
+            $table->string('code', 10)->nullable()->collation('utf8mb4_unicode_ci');
             $table->foreign('code')->references('code')->on('communes');
         });
     }
