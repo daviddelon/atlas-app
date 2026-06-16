@@ -88,6 +88,15 @@ class TaxonController extends Controller
             ->get();
 
         $families = $topFamilies->pluck('family')->toArray();
+
+        if (empty($families)) {
+            $taxa = new \Illuminate\Pagination\LengthAwarePaginator([], 0, 10);
+            return view('atlas', compact(
+                'categories', 'zoomLevel', 'family', 'family_slug',
+                'kingdom_slug', 'class_slug', 'location_slug', 'communeCode'
+            ) + ['taxa' => $taxa]);
+        }
+
         $rankedQuery = '
             WITH ranked_taxa AS (
                 SELECT t.*,
