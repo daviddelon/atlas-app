@@ -88,7 +88,7 @@ class SeedTaxonObservations extends Command
                     $pointWKT = "POINT({$record['longitude']} {$record['latitude']})";
 
                     $isInside = DB::selectOne('
-                        SELECT ST_Contains(?, ST_SRID(ST_PointFromText(?), 4326)) AS inside', [$communeGeom, $pointWKT]);
+                        SELECT ST_Contains(?, ST_PointFromText(?, 4326)) AS inside', [$communeGeom, $pointWKT]);
 
                     if ($isInside->inside) {
                         $observation_records[] = [
