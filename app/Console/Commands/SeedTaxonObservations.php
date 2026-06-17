@@ -47,7 +47,7 @@ class SeedTaxonObservations extends Command
 
         $communeGeom = DB::table('communes')
             ->where('code', $code)
-            ->value('geom');
+            ->value(DB::raw('ST_AsText(geom)'));
 
         if (! $communeGeom) {
             $this->error("Commune $code introuvable.");
@@ -88,7 +88,7 @@ class SeedTaxonObservations extends Command
                     $pointWKT = "POINT({$record['longitude']} {$record['latitude']})";
 
                     $isInside = DB::selectOne('
-                        SELECT ST_Contains(?, ST_PointFromText(?, 4326)) AS inside', [$communeGeom, $pointWKT]);
+                        SELECT ST_Contains(ST_GeomFromText(?, 4326), ST_PointFromText(?, 4326)) AS inside', [$communeGeom, $pointWKT]);
 
                     if ($isInside->inside) {
                         $observation_records[] = [
