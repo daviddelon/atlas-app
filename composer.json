@@ -16,7 +16,7 @@
         "livewire/livewire": "^3.6",
         "maize-tech/laravel-markable": "^2.3",
         "matanyadaev/laravel-eloquent-spatial": "^4.5",
-        "league/csv": "^9.23.0",
+        "league/csv": "^9.23.0"
     },
     "require-dev": {
         "barryvdh/laravel-debugbar": "^3.15",
