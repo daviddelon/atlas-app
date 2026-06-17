@@ -1,21 +1,25 @@
 <?php
 
-namespace Database\Seeders;
+namespace App\Console\Commands;
 
-use Illuminate\Database\Seeder;
+use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 
-class CommuneSeeder extends Seeder
+class SeedCommunes extends Command
 {
-    public function run(): void
+    protected $signature = 'seed:communes {file? : The GeoJSON file path to seed from}';
+    protected $description = 'Seed communes from a GeoJSON file';
+
+    public function handle(): int
     {
-        $file = base_path('data/communes-5m-2025-01-08.geojson');
+        $file = $this->argument('file') ?? base_path('data/communes-5m-2025-01-08.geojson');
 
         if (! file_exists($file)) {
-            throw new \Exception("GeoJSON file not found at $file");
+            $this->error("File not found: $file");
+            return 1;
         }
 
-        $this->command->info("Importing communes from $file...");
+        $this->info("Importing communes from $file...");
 
         DB::statement('SET FOREIGN_KEY_CHECKS = 0');
         DB::table('communes')->delete();
@@ -23,7 +27,8 @@ class CommuneSeeder extends Seeder
 
         $handle = fopen($file, 'rb');
         if (! $handle) {
-            throw new \Exception("Cannot open file: $file");
+            $this->error("Cannot open file: $file");
+            return 1;
         }
 
         $depth = 0;
@@ -35,7 +40,7 @@ class CommuneSeeder extends Seeder
         $featuresStarted = false;
         $featuresEnded = false;
 
-        $bar = $this->command->getOutput()->createProgressBar(35000);
+        $bar = $this->output->createProgressBar(35000);
         $bar->start();
 
         while (! feof($handle) && ! $featuresEnded) {
@@ -113,8 +118,10 @@ class CommuneSeeder extends Seeder
         fclose($handle);
 
         $bar->finish();
-        $this->command->line('');
-        $this->command->info("Inserted $total communes.");
+        $this->line('');
+        $this->info("Inserted $total communes.");
+
+        return 0;
     }
 
     private function processFeature(string $json): ?array
@@ -190,7 +197,7 @@ class CommuneSeeder extends Seeder
             $this->doInsert($records);
         } catch (\Exception $e) {
             if (count($records) === 1) {
-                $this->command->warn("Skipping commune {$records[0]['code']} (invalid geometry)");
+                $this->warn("Skipping commune {$records[0]['code']} (invalid geometry)");
                 return;
             }
             $mid = intdiv(count($records), 2);
