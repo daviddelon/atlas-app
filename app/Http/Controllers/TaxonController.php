@@ -98,19 +98,22 @@ class TaxonController extends Controller
         }
 
         $rankedQuery = '
-            WITH ranked_taxa AS (
-                SELECT t.*,
-                       COUNT(o.id) AS observations_count,
-                       ROW_NUMBER() OVER (PARTITION BY t.family ORDER BY COUNT(o.id) DESC, t.id ASC) AS rn
-                FROM taxa t
-                JOIN observations o ON t.id = o.taxon_id
-                WHERE t.family IN ('.str_repeat('?,', count($families) - 1).'?)
+            SELECT t.*, cnt.observations_count
+            FROM taxa t
+            JOIN (
+                SELECT o.taxon_id, t2.family, t2.id AS taxon_pk,
+                       COUNT(*) AS observations_count,
+                       ROW_NUMBER() OVER (
+                           PARTITION BY t2.family
+                           ORDER BY COUNT(*) DESC, t2.id ASC
+                       ) AS rn
+                FROM observations o
+                JOIN taxa t2 ON t2.id = o.taxon_id
+                WHERE t2.family IN ('.str_repeat('?,', count($families) - 1).'?)
                   AND o.code = ?
-                  AND EXISTS (SELECT 1 FROM photos p WHERE p.taxon_id = t.id)
-                GROUP BY t.id
-                HAVING COUNT(o.id) > 0
-            )
-            SELECT * FROM ranked_taxa WHERE rn = 1
+                  AND EXISTS (SELECT 1 FROM photos p WHERE p.taxon_id = t2.id)
+                GROUP BY o.taxon_id, t2.family, t2.id
+            ) cnt ON cnt.taxon_id = t.id AND cnt.rn = 1
         ';
         $mostObservedTaxa = DB::select($rankedQuery, array_merge($families, [$communeCode]));
         $mostObservedTaxa = collect($mostObservedTaxa)->keyBy('family');
