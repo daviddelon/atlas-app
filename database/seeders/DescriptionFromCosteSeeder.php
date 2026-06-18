@@ -40,13 +40,15 @@ use RestClient;
 
 class DescriptionFromCosteSeeder extends Seeder
 {
+    public string $sqlitePath = '/var/www/html/data/bdtfx/bdtfx_v9_00/bdtfx.db';
+
     /**
      * Run the database seeds.
      */
     public function run(): void
     {
         // Connect to the external bdtfx database using PDO
-        $pdo = new \PDO('sqlite:/var/www/html/data/bdtfx/bdtfx_v9_00/bdtfx.db');
+        $pdo = new \PDO("sqlite:{$this->sqlitePath}");
 
         DB::table('descriptions')->delete();
 
